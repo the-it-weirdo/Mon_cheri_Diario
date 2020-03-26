@@ -1,0 +1,33 @@
+<resources>
+    <string name="app_name">Mon chéri Diario</string>
+    <string name="title_activity_dashboard">Dashboard Activity</string>
+
+    <!--LoginActivity & SignUpActivity-->
+    <string name="uNameHint">Enter your E-Mail</string>
+    <string name="passHint">Enter your password</string>
+    <string name="loginButtonText">Login</string>
+    <string name="signUpButtonText">Don\'t have an account? Sign-Up</string>
+
+    <!--SignUpActivity-->
+    <string name="nameHint">Enter your first name</string>
+    <string name="signUpButton">Sign Up</string>
+    <string name="loginButton">Already have an account ? Login</string>
+
+    <!--ChooseProfilePicture-->
+    <string name="choose_button">Choose Image</string>
+    <string name="upload_button">Upload Image</string>
+
+    <!--Navigation-->
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_logout">Log out</string>
+
+    <string name="menu_home">Home</string>
+    <string name="menu_daily_entries">Daily Entries</string>
+    <string name="menu_to_do">To Do</string>
+    <string name="menu_tools">Settings</string>
+    <string name="menu_share">Share</string>
+    <string name="menu_send">Send</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+
+</resources>

@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "77361770860",
+    "firebase_url": "https://mon-cheri-diario-7e7ae.firebaseio.com",
+    "project_id": "mon-cheri-diario-7e7ae",
+    "storage_bucket": "mon-cheri-diario-7e7ae.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:77361770860:android:d9ce28179c77fa1b344349",
+        "android_client_info": {
+          "package_name": "com.kingominho.monchridiario"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "77361770860-2s6d792i8ugfdi5uce0fktmciqs6clsj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.kingominho.monchridiario",
+            "certificate_hash": "1ea3d1b933e0f660e49d7c7763a0a30581014b44"
+          }
+        },
+        {
+          "client_id": "77361770860-v4qp7nda5eijnsj91vvmev13thacprel.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDr7rXkBkJ6yFFAbJAbp18I8GVSvhoVU2I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "77361770860-v4qp7nda5eijnsj91vvmev13thacprel.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

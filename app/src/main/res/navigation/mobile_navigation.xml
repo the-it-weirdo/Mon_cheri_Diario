@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:startDestination="@+id/nav_home">
+
+    <fragment
+        android:id="@+id/nav_home"
+        android:name="com.kingominho.monchridiario.ui.home.HomeFragment"
+        android:label="@string/menu_home"
+        tools:layout="@layout/fragment_home" />
+
+    <fragment
+        android:id="@+id/nav_daily_entries"
+        android:name="com.kingominho.monchridiario.ui.dailyEntries.DailyEntriesFragment"
+        android:label="@string/menu_daily_entries"
+        tools:layout="@layout/fragment_daily_entries" />
+
+    <fragment
+        android:id="@+id/nav_to_do"
+        android:name="com.kingominho.monchridiario.ui.toDo.ToDoFragment"
+        android:label="@string/menu_to_do"
+        tools:layout="@layout/fragment_to_do" />
+
+    <fragment
+        android:id="@+id/nav_tools"
+        android:name="com.kingominho.monchridiario.ui.tools.ToolsFragment"
+        android:label="@string/menu_tools"
+        tools:layout="@layout/fragment_tools" />
+
+    <fragment
+        android:id="@+id/nav_share"
+        android:name="com.kingominho.monchridiario.ui.share.ShareFragment"
+        android:label="@string/menu_share"
+        tools:layout="@layout/fragment_share" />
+
+    <fragment
+        android:id="@+id/nav_send"
+        android:name="com.kingominho.monchridiario.ui.send.SendFragment"
+        android:label="@string/menu_send"
+        tools:layout="@layout/fragment_send" />
+    <fragment
+        android:id="@+id/manageCategory"
+        android:name="com.kingominho.monchridiario.ManageCategoryFragment"
+        android:label="fragment_manage_category"
+        tools:layout="@layout/fragment_manage_category" />
+</navigation>
