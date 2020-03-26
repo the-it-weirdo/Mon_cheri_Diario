@@ -42,6 +42,6 @@
     <fragment
         android:id="@+id/manageCategory"
         android:name="com.kingominho.monchridiario.ManageCategoryFragment"
-        android:label="fragment_manage_category"
+        android:label="Manage Category"
         tools:layout="@layout/fragment_manage_category" />
 </navigation>

@@ -14,9 +14,8 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
-import static androidx.constraintlayout.widget.Constraints.TAG;
-
 public class CategoryManager {
+    private final static String TAG = "CategoryManager: ";
 
     private final static String CATEGORY_COLLECTION_PATH = "categories";
 
@@ -37,7 +36,8 @@ public class CategoryManager {
 
     public FirestoreRecyclerOptions<Category> getAllCategoriesOptions() {
         Query query = categoryCollectionRef.whereEqualTo(Category.KEY_USER_ID,
-                FirebaseAuth.getInstance().getCurrentUser().getUid());
+                FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .orderBy(Category.KEY_CATEGORY_NAME);
 
 
         FirestoreRecyclerOptions<Category> options = new FirestoreRecyclerOptions.Builder<Category>()
@@ -54,6 +54,8 @@ public class CategoryManager {
         String user_id = mAuth.getCurrentUser().getUid();
         Category category = new Category(categoryName, user_id);
 
+        //insert timestamp -> updates.put("timestamp", FieldValue.serverTimestamp());
+        //TODO: 1. bug: duplicate entries possible
         categoryCollectionRef.add(category)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
@@ -71,14 +73,13 @@ public class CategoryManager {
         return categoryId.toString();
     }
 
-    public String updateCategoryName(String newName, String userId, String path) {
+    public String updateCategoryName(DocumentReference documentReference, String newName) {
 
         final StringBuilder message = new StringBuilder();
 
-        Category category = new Category(newName, userId);
-
-        //TODO: fix method to get document reference from cellection reference
-        DocumentReference documentReference = categoryCollectionRef.document();
+        mAuth = FirebaseAuth.getInstance();
+        String user_id = mAuth.getCurrentUser().getUid();
+        Category category = new Category(newName, user_id);
 
         documentReference
                 .update(category.toMap())
@@ -99,12 +100,8 @@ public class CategoryManager {
         return message.toString();
     }
 
-    public String deleteCategory(String path) {
+    public String deleteCategory(DocumentReference documentReference) {
         final StringBuilder message = new StringBuilder();
-
-        //TODO: fix method to get document reference from collection reference
-        DocumentReference documentReference = categoryCollectionRef.document();
-
         documentReference
                 .delete()
                 .addOnSuccessListener(new OnSuccessListener<Void>() {

@@ -6,4 +6,8 @@
 
     <color name="white">#ffffff</color>
 
+    <color name="ok">#64DD17</color>
+    <color name="info">#0091EA</color>
+    <color name="error">#D50000</color>
+
 </resources>

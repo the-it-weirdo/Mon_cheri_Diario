@@ -1,6 +1,7 @@
 package com.kingominho.monchridiario;
 
 
+import android.app.Dialog;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -16,6 +17,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 
 import android.widget.Toast;
@@ -24,6 +27,7 @@ import android.widget.Toast;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 
 public class ManageCategoryFragment extends Fragment {
@@ -37,7 +41,7 @@ public class ManageCategoryFragment extends Fragment {
     private ProgressBar progressBar;
     private FloatingActionButton fabAddCategory;
 
-    //TODO: Recyclerview not loading. StringBuilder not sending messages.
+    //TODO: StringBuilder not sending messages.
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -59,10 +63,7 @@ public class ManageCategoryFragment extends Fragment {
         fabAddCategory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO: create new category
-                String message = categoryManager.createNewCategory("New Category " +
-                        FirebaseAuth.getInstance().getCurrentUser().getDisplayName() + " ");
-                Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+                showAddCategoryDialog();
             }
         });
     }
@@ -115,7 +116,96 @@ public class ManageCategoryFragment extends Fragment {
                 Toast.makeText(getContext(), "Position: " + position + " ID: " + id + " clicked.",
                         Toast.LENGTH_SHORT).show();
             }
+
+            @Override
+            public void OnUpdateClick(DocumentSnapshot documentSnapshot, int position) {
+
+                DocumentReference documentReference = documentSnapshot.getReference();
+                showUpdateCategoryDialog(documentReference);
+            }
+
+            @Override
+            public void OnDeleteClick(DocumentSnapshot documentSnapshot, int position) {
+                //categoryAdapter.deleteItem(position);
+                categoryManager.deleteCategory(documentSnapshot.getReference());
+            }
         });
+    }
+
+    private void showAddCategoryDialog() {
+        final Dialog dialog = new Dialog(getActivity());
+        dialog.setContentView(R.layout.add_category_dialog);
+        dialog.setTitle("Add new category");
+
+        final EditText editTextCategoryName = dialog.findViewById(R.id.edit_text_category_name);
+        Button okayButton = dialog.findViewById(R.id.add_new_category_button);
+        Button dismissButton = dialog.findViewById(R.id.dismiss_dialog_button);
+
+        okayButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String s = editTextCategoryName.getText().toString();
+                if (s.trim().isEmpty()) {
+                    editTextCategoryName.setError("Name cannot be empty!");
+                    editTextCategoryName.requestFocus();
+                } else {
+                    addCategory(s);
+                    dialog.dismiss();
+                }
+            }
+        });
+
+        dismissButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
+    }
+
+    private void showUpdateCategoryDialog(final DocumentReference documentReference) {
+        final Dialog dialog = new Dialog(getActivity());
+        dialog.setContentView(R.layout.add_category_dialog);
+        dialog.setTitle("Update Category");
+
+        final EditText editTextCategoryName = dialog.findViewById(R.id.edit_text_category_name);
+        Button okayButton = dialog.findViewById(R.id.add_new_category_button);
+        Button dismissButton = dialog.findViewById(R.id.dismiss_dialog_button);
+
+        okayButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String s = editTextCategoryName.getText().toString();
+                if (s.trim().isEmpty()) {
+                    editTextCategoryName.setError("Name cannot be empty!");
+                    editTextCategoryName.requestFocus();
+                } else {
+                    updateCategory(documentReference, s);
+                    dialog.dismiss();
+                }
+            }
+        });
+
+        dismissButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
+    }
+
+    private void addCategory(String name) {
+        String message = categoryManager.createNewCategory(name);
+        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    private void updateCategory(DocumentReference documentReference, String newName) {
+        String message = categoryManager.updateCategoryName(documentReference, newName);
+        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
     }
 
 }
