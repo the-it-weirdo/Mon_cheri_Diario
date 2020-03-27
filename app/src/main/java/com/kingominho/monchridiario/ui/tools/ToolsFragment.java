@@ -71,7 +71,7 @@ public class ToolsFragment extends Fragment {
         changePasswordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                changePasswordButtonClicked();
+                changePasswordButtonClicked(v);
             }
         });
 
@@ -97,8 +97,9 @@ public class ToolsFragment extends Fragment {
     }
 
 
-    private void changePasswordButtonClicked() {
-        Toast.makeText(getContext(), "Password changed!!", Toast.LENGTH_SHORT).show();
+    private void changePasswordButtonClicked(View view) {
+        //Toast.makeText(getContext(), "Password changed!!", Toast.LENGTH_SHORT).show();
+        Navigation.findNavController(view).navigate(R.id.changePassword);
     }
 
 

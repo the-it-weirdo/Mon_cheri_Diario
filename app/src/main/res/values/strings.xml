@@ -2,6 +2,9 @@
     <string name="app_name">Mon chéri Diario</string>
     <string name="title_activity_dashboard">Dashboard Activity</string>
 
+    <!--General-->
+    <string name="cancel">Cancel</string>
+
     <!--LoginActivity & SignUpActivity-->
     <string name="uNameHint">Enter your E-Mail</string>
     <string name="passHint">Enter your password</string>
@@ -28,6 +31,13 @@
     <string name="menu_share">Share</string>
     <string name="menu_send">Send</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
+    <string name="navigation_manage_categories">Manage Categories</string>
+    <string name="navigation_change_password">Change Password</string>
+
+    <!--Change Profile Picture-->
+    <string name="enter_current_password">Enter your current password</string>
+    <string name="enter_new_password">Enter new password</string>
+    <string name="re_enter_new_password">Confirm new password</string>
+    <string name="change_password_button_text">Change password</string>
 
 </resources>

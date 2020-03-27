@@ -52,7 +52,18 @@ public class ManageCategoryFragment extends Fragment {
         recyclerView = root.findViewById(R.id.recycler_view);
         progressBar = root.findViewById(R.id.progress_circle);
         fabAddCategory = root.findViewById(R.id.fab_add_category);
+
+        categoryAdapter = new CategoryAdapter(categoryManager.getAllCategoriesOptions());
+        categoryAdapter.startListening();
+        Log.d(TAG, "onCreateView: categoryAdapter started listening.");
         return root;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        categoryAdapter.startListening();
+        Log.d(TAG, "onResume: categoryAdapter started listening.");
     }
 
     @Override
@@ -66,14 +77,9 @@ public class ManageCategoryFragment extends Fragment {
                 showAddCategoryDialog();
             }
         });
+
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        categoryAdapter.startListening();
-        Log.d(TAG, "onActivityCreated: categoryAdapter started listening.");
-    }
 
     @Override
     public void onStop() {
@@ -83,8 +89,6 @@ public class ManageCategoryFragment extends Fragment {
     }
 
     private void setUpRecyclerView() {
-
-        categoryAdapter = new CategoryAdapter(categoryManager.getAllCategoriesOptions());
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));

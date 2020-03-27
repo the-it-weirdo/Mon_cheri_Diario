@@ -26,7 +26,22 @@
         android:id="@+id/nav_tools"
         android:name="com.kingominho.monchridiario.ui.tools.ToolsFragment"
         android:label="@string/menu_tools"
-        tools:layout="@layout/fragment_tools" />
+        tools:layout="@layout/fragment_tools" >
+        <action
+            android:id="@+id/action_nav_tools_to_manageCategory"
+            app:destination="@id/manageCategory"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_nav_tools_to_changePassword"
+            app:destination="@id/changePassword"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_share"
@@ -42,6 +57,11 @@
     <fragment
         android:id="@+id/manageCategory"
         android:name="com.kingominho.monchridiario.ManageCategoryFragment"
-        android:label="Manage Category"
+        android:label="@string/navigation_manage_categories"
         tools:layout="@layout/fragment_manage_category" />
+    <fragment
+        android:id="@+id/changePassword"
+        android:name="com.kingominho.monchridiario.ChangePassword"
+        android:label="@string/navigation_change_password"
+        tools:layout="@layout/fragment_change_password" />
 </navigation>
