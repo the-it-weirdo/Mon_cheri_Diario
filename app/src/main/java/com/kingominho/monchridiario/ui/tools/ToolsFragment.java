@@ -1,7 +1,9 @@
 package com.kingominho.monchridiario.ui.tools;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,14 +18,25 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.kingominho.monchridiario.AccountManager;
+import com.kingominho.monchridiario.ChooseProfilePicture;
 import com.kingominho.monchridiario.LoginActivity;
 import com.kingominho.monchridiario.R;
 import com.squareup.picasso.Picasso;
 
+import static android.app.Activity.RESULT_OK;
+
 public class ToolsFragment extends Fragment {
 
+    private final int PICK_IMAGE_REQUEST = 1;
+    private final static String TAG = "ToolsFragment";
+
     private ToolsViewModel toolsViewModel;
+
+    Button changeProfilePictureButton, changePasswordButton,
+            manageCategoriesButton, deleteAccountButton;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -53,21 +66,22 @@ public class ToolsFragment extends Fragment {
                 .placeholder(view.getResources().getDrawable(R.drawable.ic_person_black_24dp))
                 .into(profilePictureImageView);
 
+
         TextView displayNameTextView = view.findViewById(R.id.display_name_text_view);
         displayNameTextView.setText(toolsViewModel.getmDisplayName());
 
         TextView emailTextView = view.findViewById(R.id.email_text_view);
         emailTextView.setText(toolsViewModel.getmEmail());
 
-        Button changeProfilePictureButton = view.findViewById(R.id.change_profile_picture_button);
+        changeProfilePictureButton = view.findViewById(R.id.change_profile_picture_button);
         changeProfilePictureButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                changeProfilePictureButtonClicked();
+                changeProfilePictureButtonClicked(v);
             }
         });
 
-        Button changePasswordButton = view.findViewById(R.id.change_password_button);
+        changePasswordButton = view.findViewById(R.id.change_password_button);
         changePasswordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -75,7 +89,7 @@ public class ToolsFragment extends Fragment {
             }
         });
 
-        Button manageCategoriesButton = view.findViewById(R.id.manage_categories_button);
+        manageCategoriesButton = view.findViewById(R.id.manage_categories_button);
         manageCategoriesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -83,7 +97,7 @@ public class ToolsFragment extends Fragment {
             }
         });
 
-        Button deleteAccountButton = view.findViewById(R.id.delete_account_button);
+        deleteAccountButton = view.findViewById(R.id.delete_account_button);
         deleteAccountButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -92,10 +106,19 @@ public class ToolsFragment extends Fragment {
         });
     }
 
-    private void changeProfilePictureButtonClicked() {
-        Toast.makeText(getContext(), "Profile Picture changed!", Toast.LENGTH_SHORT).show();
+    private void changeProfilePictureButtonClicked(View view) {
+        changeProfilePictureButton.setEnabled(false);
+        //Navigation.findNavController(view).navigate(R.id.chooseProfilePicture);
+        Intent intent = new Intent(getActivity(), ChooseProfilePicture.class);
+        startActivity(intent);
+        getActivity().finish();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        changeProfilePictureButton.setEnabled(true);
+    }
 
     private void changePasswordButtonClicked(View view) {
         //Toast.makeText(getContext(), "Password changed!!", Toast.LENGTH_SHORT).show();
@@ -117,4 +140,15 @@ public class ToolsFragment extends Fragment {
         getActivity().finish();
     }
 
+    /*@Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
+                && data != null && data.getData() != null) {
+            Uri mImageUri = data.getData();
+            accountManager.updateProfilePicture(FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl().toString(),
+                    mImageUri);
+        }
+    }*/
 }

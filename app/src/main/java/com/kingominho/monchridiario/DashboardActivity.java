@@ -66,22 +66,8 @@ public class DashboardActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         }
-
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
-
-        //Initiating navigation header
-        View headerView = navigationView.getHeaderView(0);
-        profileImage = headerView.findViewById(R.id.profile_image_view);
-        displayNameTextView = headerView.findViewById(R.id.display_name_text_view);
-        emailTextView = headerView.findViewById(R.id.email_text_view);
-        displayNameTextView.setText(currentUser.getDisplayName());
-        emailTextView.setText(currentUser.getEmail());
-        Picasso.with(this)
-                .load(currentUser.getPhotoUrl())
-                .placeholder(getDrawable(R.drawable.ic_person_black_24dp))
-                .into(profileImage);
-
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
@@ -102,11 +88,26 @@ public class DashboardActivity extends AppCompatActivity {
             }
         });
 
-
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+
+        //Initiating navigation header
+        View headerView = navigationView.getHeaderView(0);
+        profileImage = headerView.findViewById(R.id.profile_image_view);
+        displayNameTextView = headerView.findViewById(R.id.display_name_text_view);
+        emailTextView = headerView.findViewById(R.id.email_text_view);
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        displayNameTextView.setText(currentUser.getDisplayName());
+        emailTextView.setText(currentUser.getEmail());
+        Picasso.with(this)
+                .load(currentUser.getPhotoUrl())
+                .placeholder(getDrawable(R.drawable.ic_person_black_24dp))
+                .into(profileImage);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

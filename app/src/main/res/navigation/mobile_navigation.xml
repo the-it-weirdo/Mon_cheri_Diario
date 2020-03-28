@@ -41,6 +41,13 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_nav_tools_to_chooseProfilePicture"
+            app:destination="@id/chooseProfilePicture"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
 
     <fragment
@@ -64,4 +71,9 @@
         android:name="com.kingominho.monchridiario.ChangePassword"
         android:label="@string/navigation_change_password"
         tools:layout="@layout/fragment_change_password" />
+    <activity
+        android:id="@+id/chooseProfilePicture"
+        android:name="com.kingominho.monchridiario.ChooseProfilePicture"
+        android:label="@string/navigation_choose_profile_picture"
+        tools:layout="@layout/activity_choose_profile_picture" />
 </navigation>

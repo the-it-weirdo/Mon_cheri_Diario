@@ -3,6 +3,8 @@ package com.kingominho.monchridiario;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import android.content.ContentResolver;
 import android.content.Intent;
@@ -34,7 +36,7 @@ import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
-public class ChooseProfilePicture extends AppCompatActivity {
+public class ChooseProfilePicture extends AppCompatActivity implements AccountManager.AccountManagerTaskListener {
 
     private static final String TAG = "ChooseProfilePicture:";
 
@@ -84,11 +86,12 @@ public class ChooseProfilePicture extends AppCompatActivity {
         mButtonUpload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mUploadTask != null && mUploadTask.isInProgress()) {
+                /*if (mUploadTask != null && mUploadTask.isInProgress()) {
                     Toast.makeText(ChooseProfilePicture.this, "Upload in Progress!!", Toast.LENGTH_SHORT).show();
                 } else {
                     uploadFile();
-                }
+                }*/
+                uploadFile();
             }
         });
     }
@@ -108,75 +111,10 @@ public class ChooseProfilePicture extends AppCompatActivity {
 
     private void uploadFile() {
         if (mImageUri != null) {
-            final StorageReference fileReference = mStorageReference.child(System.currentTimeMillis() +
-                    "." + getFileExtension(mImageUri));
-
-            mUploadTask = fileReference.putFile(mImageUri)
-                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            Handler handler = new Handler();
-                            handler.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    mProgressBar.setProgress(0);
-                                }
-                            }, 1000);
-
-                            fileReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                @Override
-                                public void onSuccess(Uri uri) {
-                                    ProfilePicture upload = new ProfilePicture(mUser.getUid(),
-                                            uri.toString());
-
-                                    String uploadId = mDatabaseReference.push().getKey();
-                                    mDatabaseReference.child(uploadId).setValue(upload);
-
-                                    UserProfileChangeRequest userProfileChangeRequest = new UserProfileChangeRequest.Builder()
-                                            .setPhotoUri(uri).build();
-                                    mUser.updateProfile(userProfileChangeRequest)
-                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<Void> task) {
-                                                    if (task.isSuccessful()) {
-                                                        Toast.makeText(ChooseProfilePicture.this,
-                                                                "Profile photo set successfully",
-                                                                Toast.LENGTH_SHORT).show();
-                                                        Log.d(ChooseProfilePicture.TAG, "Profile photo set okay.");
-                                                        Intent intent = new Intent(ChooseProfilePicture.this,
-                                                                DashboardActivity.class);
-                                                        startActivity(intent);
-                                                        finish();
-                                                    } else {
-                                                        Toast.makeText(ChooseProfilePicture.this,
-                                                                "Profile photo couldn't be set!!",
-                                                                Toast.LENGTH_SHORT).show();
-                                                        Log.d(ChooseProfilePicture.TAG, "Profile photo set fail!!");
-                                                    }
-                                                }
-                                            });
-                                }
-                            });
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            mProgressBar.setProgress(0);
-                            Toast.makeText(ChooseProfilePicture.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    })
-                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onProgress(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
-                            double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                                mProgressBar.setProgress((int) progress, true);
-                            } else {
-                                mProgressBar.setProgress((int) progress);
-                            }
-                        }
-                    });
+            mButtonUpload.setEnabled(false);
+            AccountManager accountManager = AccountManager.getInstance();
+            accountManager.setAccountManagerTaskListener(this);
+            accountManager.setProfilePicture(mImageUri);
         } else {
             Toast.makeText(this, "No file selected!!", Toast.LENGTH_SHORT).show();
         }
@@ -189,8 +127,52 @@ public class ChooseProfilePicture extends AppCompatActivity {
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
                 && data != null && data.getData() != null) {
             mImageUri = data.getData();
-
             Picasso.with(this).load(mImageUri).into(mImageView);
         }
+    }
+
+    @Override
+    public void OnFailure(Exception e) {
+        mButtonUpload.setEnabled(true);
+        Log.e(TAG, "OnFailure: Exception occurred. ", e);
+        Toast.makeText(getApplicationContext(), "Error: " + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+
+    }
+
+    @Override
+    public void OnSuccess(String message) {
+        mButtonUpload.setEnabled(true);
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void OnComplete(Task task) {
+        mButtonUpload.setEnabled(true);
+    }
+
+    @Override
+    public void OnTaskNotSuccessful(Task task) {
+        mButtonUpload.setEnabled(true);
+    }
+
+    @Override
+    public void OnSuccessfulProfilePictureSet() {
+        mButtonUpload.setEnabled(true);
+        Toast.makeText(getApplicationContext(), "Profile Picture set successful!", Toast.LENGTH_SHORT).show();
+
+        //Navigation.findNavController(getCurrentFocus()).navigate(R.id.nav_home);
+
+
+        Intent intent = new Intent(ChooseProfilePicture.this, MainActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(ChooseProfilePicture.this, MainActivity.class);
+        startActivity(intent);
+        finish();
     }
 }
