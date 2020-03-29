@@ -9,6 +9,7 @@
     <string name="uNameHint">Enter your E-Mail</string>
     <string name="passHint">Enter your password</string>
     <string name="loginButtonText">Login</string>
+    <string name="resetPasswordButtonText">Forgot password ?</string>
     <string name="signUpButtonText">Don\'t have an account? Sign-Up</string>
 
     <!--SignUpActivity-->
@@ -43,5 +44,7 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="confirm_button_text">Confirm</string>
 
 </resources>

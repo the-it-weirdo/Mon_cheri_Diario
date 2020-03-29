@@ -25,7 +25,6 @@ import android.widget.Toast;
 
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.auth.FirebaseAuth;
 
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -138,11 +137,13 @@ public class ManageCategoryFragment extends Fragment {
 
     private void showAddCategoryDialog() {
         final Dialog dialog = new Dialog(getActivity());
-        dialog.setContentView(R.layout.add_category_dialog);
+        dialog.setContentView(R.layout.single_edit_text_dialog_layout);
         dialog.setTitle("Add new category");
 
-        final EditText editTextCategoryName = dialog.findViewById(R.id.edit_text_category_name);
-        Button okayButton = dialog.findViewById(R.id.add_new_category_button);
+        final EditText editTextCategoryName = dialog.findViewById(R.id.edit_text);
+        editTextCategoryName.setHint("Enter category name");
+        Button okayButton = dialog.findViewById(R.id.positive_button);
+        okayButton.setText("Add");
         Button dismissButton = dialog.findViewById(R.id.dismiss_dialog_button);
 
         okayButton.setOnClickListener(new View.OnClickListener() {
@@ -171,11 +172,12 @@ public class ManageCategoryFragment extends Fragment {
 
     private void showUpdateCategoryDialog(final DocumentReference documentReference) {
         final Dialog dialog = new Dialog(getActivity());
-        dialog.setContentView(R.layout.add_category_dialog);
+        dialog.setContentView(R.layout.single_edit_text_dialog_layout);
         dialog.setTitle("Update Category");
 
-        final EditText editTextCategoryName = dialog.findViewById(R.id.edit_text_category_name);
-        Button okayButton = dialog.findViewById(R.id.add_new_category_button);
+        final EditText editTextCategoryName = dialog.findViewById(R.id.edit_text);
+        editTextCategoryName.setHint("Enter category name");
+        Button okayButton = dialog.findViewById(R.id.positive_button);
         Button dismissButton = dialog.findViewById(R.id.dismiss_dialog_button);
 
         okayButton.setOnClickListener(new View.OnClickListener() {

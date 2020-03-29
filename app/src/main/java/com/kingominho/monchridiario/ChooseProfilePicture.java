@@ -54,7 +54,6 @@ public class ChooseProfilePicture extends AppCompatActivity implements AccountMa
     private FirebaseUser mUser;
     private StorageReference mStorageReference;
     private DatabaseReference mDatabaseReference;
-    private StorageTask mUploadTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,7 +110,7 @@ public class ChooseProfilePicture extends AppCompatActivity implements AccountMa
 
     private void uploadFile() {
         if (mImageUri != null) {
-            mButtonUpload.setEnabled(false);
+            updateUI(false);
             AccountManager accountManager = AccountManager.getInstance();
             accountManager.setAccountManagerTaskListener(this);
             accountManager.setProfilePicture(mImageUri);
@@ -133,7 +132,7 @@ public class ChooseProfilePicture extends AppCompatActivity implements AccountMa
 
     @Override
     public void OnFailure(Exception e) {
-        mButtonUpload.setEnabled(true);
+        updateUI(true);
         Log.e(TAG, "OnFailure: Exception occurred. ", e);
         Toast.makeText(getApplicationContext(), "Error: " + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
 
@@ -141,18 +140,18 @@ public class ChooseProfilePicture extends AppCompatActivity implements AccountMa
 
     @Override
     public void OnSuccess(String message) {
-        mButtonUpload.setEnabled(true);
+        updateUI(true);
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void OnComplete(Task task) {
-        mButtonUpload.setEnabled(true);
+        updateUI(true);
     }
 
     @Override
     public void OnTaskNotSuccessful(Task task) {
-        mButtonUpload.setEnabled(true);
+        updateUI(true);
     }
 
     @Override
@@ -174,5 +173,17 @@ public class ChooseProfilePicture extends AppCompatActivity implements AccountMa
         Intent intent = new Intent(ChooseProfilePicture.this, MainActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    private void updateUI(boolean value)
+    {
+        if(value)
+        {mButtonUpload.setEnabled(true);
+        mButtonChooseImage.setEnabled(true);
+        mProgressBar.setVisibility(View.GONE);} else {
+            mButtonUpload.setEnabled(false);
+            mButtonChooseImage.setEnabled(false);
+            mProgressBar.setVisibility(View.VISIBLE);
+        }
     }
 }

@@ -1,7 +1,5 @@
 package com.kingominho.monchridiario;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -22,13 +20,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.EmailAuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserProfileChangeRequest;
 
 
 public class ChangePassword extends Fragment {
@@ -36,7 +32,7 @@ public class ChangePassword extends Fragment {
 
     EditText editTextCurrentPassword;
     EditText editTextNewPassword;
-    EditText editTextconfirmPassword;
+    EditText editTextConfirmPassword;
     Button buttonChangePassword;
     ProgressBar progressBar;
 
@@ -47,7 +43,7 @@ public class ChangePassword extends Fragment {
         View root = inflater.inflate(R.layout.fragment_change_password, container, false);
         editTextCurrentPassword = root.findViewById(R.id.edit_text_password);
         editTextNewPassword = root.findViewById(R.id.edit_text_new_password);
-        editTextconfirmPassword = root.findViewById(R.id.edit_text_confirm_new_password);
+        editTextConfirmPassword = root.findViewById(R.id.edit_text_confirm_new_password);
         buttonChangePassword = root.findViewById(R.id.button_change_password);
         progressBar = root.findViewById(R.id.progress_bar);
         progressBar.setVisibility(View.GONE);
@@ -62,23 +58,41 @@ public class ChangePassword extends Fragment {
             @Override
             public void onClick(View v) {
                 progressBar.setVisibility(View.VISIBLE);
+                editTextCurrentPassword.setEnabled(false);
+                editTextNewPassword.setEnabled(false);
+                editTextConfirmPassword.setEnabled(false);
                 buttonChangePassword.setEnabled(false);
                 String currentPassword = editTextCurrentPassword.getText().toString();
-                final String newPassword = editTextNewPassword.getText().toString();
-                String confirmNewPassword = editTextconfirmPassword.getText().toString();
-                //TODO: validate inputs
+                String newPassword = editTextNewPassword.getText().toString();
                 if (validateInputs()) {
                     changePassword(currentPassword, newPassword);
-                } else {
-                    progressBar.setVisibility(View.GONE);
-                    buttonChangePassword.setEnabled(true);
                 }
             }
         });
     }
 
     private boolean validateInputs() {
-        return true;
+        InputValidationUtil inputValidationUtil = new InputValidationUtil();
+        int passwordResult = inputValidationUtil.validatePassword(editTextCurrentPassword.getText().toString());
+        int newPasswordResult = inputValidationUtil.validatePassword(editTextNewPassword.getText().toString());
+        int confirmNewPassword = inputValidationUtil.confirmPassword(editTextNewPassword.getText().toString(),
+                editTextConfirmPassword.getText().toString());
+        if (passwordResult == inputValidationUtil.ERROR_CODE_EMPTY_STRING) {
+            notifyUser(editTextCurrentPassword, "Current password cannot be empty.");
+        } else if (passwordResult == inputValidationUtil.ERROR_CODE_REGEX_NO_MATCH) {
+            notifyUser(editTextCurrentPassword, "Invalid password.");
+        } else if (newPasswordResult == inputValidationUtil.ERROR_CODE_EMPTY_STRING) {
+            notifyUser(editTextNewPassword, "New Password cannot be empty.");
+        } else if (newPasswordResult == inputValidationUtil.ERROR_CODE_REGEX_NO_MATCH) {
+            notifyUser(editTextNewPassword, inputValidationUtil.ERROR_MESSAGE_INVALID_PASSWORD);
+        } else if (confirmNewPassword == inputValidationUtil.ERROR_CODE_EMPTY_STRING) {
+            notifyUser(editTextConfirmPassword, "Field cannot be empty.");
+        } else if (confirmNewPassword != inputValidationUtil.SUCCESS_CODE_PASSWORDS_MATCH) {
+            notifyUser(editTextConfirmPassword, "Passwords does not match.");
+        } else {
+            return true;
+        }
+        return false;
     }
 
     private void changePassword(String currentPassword, final String newPassword) {
@@ -95,32 +109,31 @@ public class ChangePassword extends Fragment {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
                                             if (task.isSuccessful()) {
-                                                Toast.makeText(getContext(), "Password changed successfully!.",
-                                                        Toast.LENGTH_SHORT).show();
-                                                progressBar.setVisibility(View.GONE);
-                                                buttonChangePassword.setEnabled(true);
+                                                notifyUser("Password changed successfully.");
+                                                //Toast.makeText(getContext(), "Password changed successfully!.", Toast.LENGTH_SHORT).show();
+                                                //progressBar.setVisibility(View.GONE);
+                                                //buttonChangePassword.setEnabled(true);
                                                 Navigation.findNavController(getView()).navigateUp();
                                             } else {
-                                                Toast.makeText(getContext(), "Something went wrong.",
-                                                        Toast.LENGTH_SHORT).show();
-                                                progressBar.setVisibility(View.GONE);
-                                                buttonChangePassword.setEnabled(true);
+                                                notifyUser("Something went wrong.");
                                             }
                                         }
                                     })
                                     .addOnFailureListener(new OnFailureListener() {
                                         @Override
                                         public void onFailure(@NonNull Exception e) {
-                                            Toast.makeText(getContext(), e.getLocalizedMessage(),
+                                            notifyUser(e.getLocalizedMessage());
+                                            /*Toast.makeText(getContext(), e.getLocalizedMessage(),
                                                     Toast.LENGTH_SHORT).show();
                                             progressBar.setVisibility(View.GONE);
-                                            buttonChangePassword.setEnabled(true);
+                                            buttonChangePassword.setEnabled(true);*/
                                         }
                                     });
                         } else {
-                            progressBar.setVisibility(View.GONE);
-                            buttonChangePassword.setEnabled(true);
-                            Toast.makeText(getContext(), "Something went wrong.", Toast.LENGTH_SHORT).show();
+                            //progressBar.setVisibility(View.GONE);
+                            //buttonChangePassword.setEnabled(true);
+                            //Toast.makeText(getContext(), "Something went wrong.", Toast.LENGTH_SHORT).show();
+                            notifyUser("Something went wrong.");
                         }
                     }
                 })
@@ -128,23 +141,44 @@ public class ChangePassword extends Fragment {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         if (e instanceof FirebaseAuthInvalidCredentialsException) {
-                            //notifyUser("Invalid password");
-                            progressBar.setVisibility(View.GONE);
-                            editTextCurrentPassword.setError("Invalid Password!!");
-                            editTextCurrentPassword.requestFocus();
+                            notifyUser(editTextCurrentPassword, "Invalid password");
+                            //progressBar.setVisibility(View.GONE);
+                            //editTextCurrentPassword.setError("Invalid Password!!");
+                            //editTextCurrentPassword.requestFocus();
                         } else if (e instanceof FirebaseAuthInvalidUserException) {
                             String errorCode =
                                     ((FirebaseAuthInvalidUserException) e).getErrorCode();
                             Log.d(TAG, "onFailure: " + errorCode, e);
-                            progressBar.setVisibility(View.GONE);
-                            buttonChangePassword.setEnabled(true);
+                            notifyUser("Error code: " + errorCode + " " + e.getLocalizedMessage());
+                            //progressBar.setVisibility(View.GONE);
+                            //buttonChangePassword.setEnabled(true);
 
                         } else {
-                            Toast.makeText(getContext(), e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-                            progressBar.setVisibility(View.GONE);
-                            buttonChangePassword.setEnabled(true);
+                            notifyUser(e.getLocalizedMessage());
+                            //Toast.makeText(getContext(), e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                            //progressBar.setVisibility(View.GONE);
+                            //buttonChangePassword.setEnabled(true);
                         }
                     }
                 });
+    }
+
+    private void notifyUser(EditText editText, String message) {
+        editText.setError(message);
+        editText.requestFocus();
+        progressBar.setVisibility(View.GONE);
+        editTextCurrentPassword.setEnabled(true);
+        editTextNewPassword.setEnabled(true);
+        editTextConfirmPassword.setEnabled(true);
+        buttonChangePassword.setEnabled(true);
+    }
+
+    private void notifyUser(String message) {
+        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+        progressBar.setVisibility(View.GONE);
+        editTextCurrentPassword.setEnabled(true);
+        editTextNewPassword.setEnabled(true);
+        editTextConfirmPassword.setEnabled(true);
+        buttonChangePassword.setEnabled(true);
     }
 }

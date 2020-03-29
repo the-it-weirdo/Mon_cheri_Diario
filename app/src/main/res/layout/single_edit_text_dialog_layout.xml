@@ -11,11 +11,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        android:hint="Enter Category Name"
         app:hintAnimationEnabled="true">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/edit_text_category_name"
+            android:id="@+id/edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -25,16 +24,17 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
-        android:id="@+id/add_new_category_button"
+        android:id="@+id/positive_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:textColor="@color/colorAccent"
+        android:text="@string/confirm_button_text"
         android:layout_below="@id/text_input_layout"
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="8dp"
         android:textSize="12sp"
-        android:text="Add" />
+        />
 
     <Button
         android:id="@+id/dismiss_dialog_button"

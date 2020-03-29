@@ -17,6 +17,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 
@@ -53,6 +54,13 @@ public class RegistrationActivity extends AppCompatActivity {
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                editTextEmail.setEnabled(false);
+                editTextPassword.setEnabled(false);
+                editTextName.setEnabled(false);
+                editTextConfirmPassword.setEnabled(false);
+                registerButton.setEnabled(false);
+                loginButton.setEnabled(false);
+                progressBar.setVisibility(View.VISIBLE);
                 if (validateInputs()) {
                     registerUser(editTextEmail.getText().toString(), editTextPassword.getText().toString()
                             , editTextName.getText().toString());
@@ -71,7 +79,32 @@ public class RegistrationActivity extends AppCompatActivity {
     }
 
     boolean validateInputs() {
-        return true;
+        InputValidationUtil inputValidationUtil = new InputValidationUtil();
+        int nameResult = inputValidationUtil.validateName(editTextName.getText().toString());
+        int emailResult = inputValidationUtil.validateEmail(editTextEmail.getText().toString());
+        int passwordResult = inputValidationUtil.validatePassword(editTextPassword.getText().toString());
+        int confirmPasswordResult = inputValidationUtil.confirmPassword(editTextPassword.getText().toString(),
+                editTextConfirmPassword.getText().toString());
+        if (nameResult == inputValidationUtil.ERROR_CODE_EMPTY_STRING) {
+            notifyUser(editTextName, "Name cannot be empty.");
+        } else if (nameResult == inputValidationUtil.ERROR_CODE_REGEX_NO_MATCH) {
+            notifyUser(editTextName, "Name cannot contain symbols or numbers.");
+        } else if (emailResult == inputValidationUtil.ERROR_CODE_EMPTY_STRING) {
+            notifyUser(editTextEmail, "Email cannot be empty.");
+        } else if (emailResult == inputValidationUtil.ERROR_CODE_REGEX_NO_MATCH) {
+            notifyUser(editTextEmail, "Invalid email.");
+        } else if (passwordResult == inputValidationUtil.ERROR_CODE_EMPTY_STRING) {
+            notifyUser(editTextPassword, "Password cannot be empty.");
+        } else if (passwordResult == inputValidationUtil.ERROR_CODE_REGEX_NO_MATCH) {
+            notifyUser(editTextPassword, inputValidationUtil.ERROR_MESSAGE_INVALID_PASSWORD);
+        } else if (confirmPasswordResult == inputValidationUtil.ERROR_CODE_EMPTY_STRING) {
+            notifyUser(editTextConfirmPassword, "Field cannot be empty.");
+        } else if (confirmPasswordResult != inputValidationUtil.SUCCESS_CODE_PASSWORDS_MATCH) {
+            notifyUser(editTextConfirmPassword, "Passwords does not match.");
+        } else {
+            return true;
+        }
+        return false;
     }
 
     private void registerUser(final String email, final String password, final String displayName) {
@@ -107,17 +140,43 @@ public class RegistrationActivity extends AppCompatActivity {
                                         });
                             }
                         } else {
-                            progressBar.setVisibility(View.GONE);
-
-                            Toast.makeText(getApplicationContext(), "Registration failed!!", Toast.LENGTH_SHORT).show();
+                            if(task.getException() instanceof FirebaseAuthUserCollisionException) {
+                                notifyUser(editTextEmail, "Email already in use by another account. Login please.");
+                            }
+                            //progressBar.setVisibility(View.GONE);
+                            //Toast.makeText(getApplicationContext(), "Registration failed!!", Toast.LENGTH_SHORT).show();
                         }
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(getApplicationContext(), e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getApplicationContext(), e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                        notifyUser(e.getLocalizedMessage());
                     }
                 });
+    }
+
+    private void notifyUser(EditText editText, String message) {
+        editText.setError(message);
+        editText.requestFocus();
+        editTextEmail.setEnabled(true);
+        editTextPassword.setEnabled(true);
+        editTextName.setEnabled(true);
+        editTextConfirmPassword.setEnabled(true);
+        registerButton.setEnabled(true);
+        loginButton.setEnabled(true);
+        progressBar.setVisibility(View.GONE);
+    }
+
+    private void notifyUser(String message) {
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+        editTextEmail.setEnabled(true);
+        editTextPassword.setEnabled(true);
+        editTextName.setEnabled(true);
+        editTextConfirmPassword.setEnabled(true);
+        registerButton.setEnabled(true);
+        loginButton.setEnabled(true);
+        progressBar.setVisibility(View.GONE);
     }
 }
