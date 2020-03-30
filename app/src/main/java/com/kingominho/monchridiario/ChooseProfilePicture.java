@@ -175,12 +175,12 @@ public class ChooseProfilePicture extends AppCompatActivity implements AccountMa
         finish();
     }
 
-    private void updateUI(boolean value)
-    {
-        if(value)
-        {mButtonUpload.setEnabled(true);
-        mButtonChooseImage.setEnabled(true);
-        mProgressBar.setVisibility(View.GONE);} else {
+    private void updateUI(boolean value) {
+        if (value) {
+            mButtonUpload.setEnabled(true);
+            mButtonChooseImage.setEnabled(true);
+            mProgressBar.setVisibility(View.GONE);
+        } else {
             mButtonUpload.setEnabled(false);
             mButtonChooseImage.setEnabled(false);
             mProgressBar.setVisibility(View.VISIBLE);

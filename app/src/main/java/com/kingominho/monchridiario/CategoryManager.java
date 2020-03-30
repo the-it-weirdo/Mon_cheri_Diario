@@ -13,6 +13,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 
 public class CategoryManager {
     private final static String TAG = "CategoryManager: ";
@@ -39,12 +40,21 @@ public class CategoryManager {
                 FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .orderBy(Category.KEY_CATEGORY_NAME);
 
+        /* query.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                Log.d(TAG, "onSuccess: Query Returned: " + queryDocumentSnapshots.size() + " records.");
+            }
+        }); */
+
 
         FirestoreRecyclerOptions<Category> options = new FirestoreRecyclerOptions.Builder<Category>()
                 .setQuery(query, Category.class)
                 .build();
         return options;
     }
+
+
 
     public String createNewCategory(String categoryName) {
 
