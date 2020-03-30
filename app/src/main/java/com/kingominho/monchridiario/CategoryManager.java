@@ -13,7 +13,6 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QuerySnapshot;
 
 public class CategoryManager {
     private final static String TAG = "CategoryManager: ";
@@ -27,6 +26,9 @@ public class CategoryManager {
 
     private FirebaseAuth mAuth;
 
+    private CategoryManager() {
+        //empty private constructor
+    }
 
     public static CategoryManager getInstance() {
         if (mInstance == null) {
