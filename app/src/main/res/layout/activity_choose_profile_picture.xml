@@ -1,55 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/choose_profile_picture_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
+    android:fillViewport="true"
     tools:context=".ChooseProfilePicture">
 
-    <Button
-        android:id="@+id/button_choose_image"
-        style="@style/Widget.MaterialComponents.Button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentTop="true"
-        android:layout_gravity="end"
-        android:layout_margin="10dp"
-        android:text="@string/choose_button"
-        android:textColor="@color/white"
-        android:textSize="12sp" />
-
-
-    <ImageView
-        android:id="@+id/image_view"
-        android:layout_width="400dp"
-        android:layout_height="400dp"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="16dp"
-        android:src="@drawable/test" />
-
-    <ProgressBar
-        android:id="@+id/progress_bar"
+    <RelativeLayout
+        android:id="@+id/choose_profile_picture_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginBottom="16dp"
-        android:visibility="gone"/>
+        android:layout_height="match_parent"
+        android:padding="16dp">
 
-    <Button
-        android:id="@+id/button_upload"
-        style="@style/Widget.MaterialComponents.Button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"
-        android:layout_gravity="end"
-        android:layout_margin="10dp"
-        android:text="@string/upload_button"
-        android:textColor="@color/white"
-        android:textSize="12sp" />
+        <Button
+            android:id="@+id/button_choose_image"
+            style="@style/Widget.MaterialComponents.Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="end"
+            android:layout_margin="10dp"
+            android:text="@string/choose_button"
+            android:textColor="@color/white"
+            android:textSize="12sp" />
 
 
-</RelativeLayout>
+        <ImageView
+            android:id="@+id/image_view"
+            android:layout_width="400dp"
+            android:layout_height="400dp"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="16dp"
+            android:src="@drawable/ic_person_black_24dp" />
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_centerInParent="true"
+            android:layout_marginBottom="16dp"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/button_upload"
+            style="@style/Widget.MaterialComponents.Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="end"
+            android:layout_margin="10dp"
+            android:text="@string/upload_button"
+            android:textColor="@color/white"
+            android:textSize="12sp" />
+
+
+    </RelativeLayout>
+</androidx.core.widget.NestedScrollView>

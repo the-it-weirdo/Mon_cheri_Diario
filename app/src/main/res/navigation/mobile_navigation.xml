@@ -76,4 +76,9 @@
         android:name="com.kingominho.monchridiario.ChooseProfilePicture"
         android:label="@string/navigation_choose_profile_picture"
         tools:layout="@layout/activity_choose_profile_picture" />
+    <fragment
+        android:id="@+id/addDailyEntry"
+        android:name="com.kingominho.monchridiario.AddDailyEntry"
+        android:label="@string/navigation_add_daily_entry"
+        tools:layout="@layout/fragment_add_daily_entry" />
 </navigation>

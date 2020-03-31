@@ -4,6 +4,7 @@
 
     <!--General-->
     <string name="cancel">Cancel</string>
+    <string name="confirm_button_text">Confirm</string>
 
     <!--LoginActivity & SignUpActivity-->
     <string name="uNameHint">Enter your E-Mail</string>
@@ -35,6 +36,8 @@
     <string name="navigation_manage_categories">Manage Categories</string>
     <string name="navigation_change_password">Change Password</string>
     <string name="navigation_choose_profile_picture">Change Profile Picture</string>
+    <string name="navigation_add_daily_entry">Add Daily Entry</string>
+    <string name="navigation_add_task">Add Task</string>
 
     <!--Change Profile Picture-->
     <string name="enter_current_password">Enter your current password</string>
@@ -45,6 +48,6 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
-    <string name="confirm_button_text">Confirm</string>
+
 
 </resources>

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -31,6 +32,7 @@ import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class DashboardActivity extends AppCompatActivity {
 
@@ -43,6 +45,8 @@ public class DashboardActivity extends AppCompatActivity {
     private FirebaseUser currentUser;
 
     FloatingActionButton fab;
+
+    NavController navController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +79,7 @@ public class DashboardActivity extends AppCompatActivity {
                 R.id.nav_tools, R.id.nav_share, R.id.nav_send)
                 .setDrawerLayout(drawer)
                 .build();
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         navController.addOnDestinationChangedListener(new NavController.OnDestinationChangedListener() {
             @Override
             public void onDestinationChanged(@NonNull NavController controller, @NonNull NavDestination destination,
@@ -85,6 +89,7 @@ public class DashboardActivity extends AppCompatActivity {
                 } else {
                     fab.setVisibility(View.GONE);
                 }
+
             }
         });
 
@@ -123,9 +128,25 @@ public class DashboardActivity extends AppCompatActivity {
             case R.id.action_logout:
                 logOut();
                 return true;
+            case R.id.action_save:
+                Toast.makeText(getApplicationContext(), "Save clicked.", Toast.LENGTH_SHORT).show();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        invalidateOptionsMenu();
+        if (navController.getCurrentDestination().getId() == R.id.addDailyEntry) {
+            menu.findItem(R.id.action_logout).setVisible(false);
+            menu.findItem(R.id.action_save).setVisible(true);
+        } else {
+            menu.findItem(R.id.action_logout).setVisible(true);
+            menu.findItem(R.id.action_save).setVisible(false);
+        }
+        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
