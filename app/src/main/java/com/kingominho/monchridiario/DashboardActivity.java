@@ -1,13 +1,11 @@
 package com.kingominho.monchridiario;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -32,7 +30,6 @@ import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class DashboardActivity extends AppCompatActivity {
 
@@ -128,9 +125,6 @@ public class DashboardActivity extends AppCompatActivity {
             case R.id.action_logout:
                 logOut();
                 return true;
-            case R.id.action_save:
-                Toast.makeText(getApplicationContext(), "Save clicked.", Toast.LENGTH_SHORT).show();
-                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -139,12 +133,11 @@ public class DashboardActivity extends AppCompatActivity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         invalidateOptionsMenu();
-        if (navController.getCurrentDestination().getId() == R.id.addDailyEntry) {
+        int id = navController.getCurrentDestination().getId();
+        if (id == R.id.addUpdateViewDailyEntry || id == R.id.addTask) {
             menu.findItem(R.id.action_logout).setVisible(false);
-            menu.findItem(R.id.action_save).setVisible(true);
         } else {
             menu.findItem(R.id.action_logout).setVisible(true);
-            menu.findItem(R.id.action_save).setVisible(false);
         }
         return super.onPrepareOptionsMenu(menu);
     }

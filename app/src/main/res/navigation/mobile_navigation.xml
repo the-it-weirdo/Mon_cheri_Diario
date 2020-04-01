@@ -14,13 +14,24 @@
         android:id="@+id/nav_daily_entries"
         android:name="com.kingominho.monchridiario.ui.dailyEntries.DailyEntriesFragment"
         android:label="@string/menu_daily_entries"
-        tools:layout="@layout/fragment_daily_entries" />
+        tools:layout="@layout/fragment_daily_entries" >
+        <action
+            android:id="@+id/action_nav_daily_entries_to_addDailyEntry"
+            app:destination="@id/addUpdateViewDailyEntry" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_to_do"
         android:name="com.kingominho.monchridiario.ui.toDo.ToDoFragment"
         android:label="@string/menu_to_do"
-        tools:layout="@layout/fragment_to_do" />
+        tools:layout="@layout/fragment_to_do" >
+        <action
+            android:id="@+id/action_nav_to_do_to_addTask"
+            app:destination="@id/addTask" />
+        <action
+            android:id="@+id/action_nav_to_do_to_viewCategory"
+            app:destination="@id/viewCategory" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_tools"
@@ -77,8 +88,35 @@
         android:label="@string/navigation_choose_profile_picture"
         tools:layout="@layout/activity_choose_profile_picture" />
     <fragment
-        android:id="@+id/addDailyEntry"
-        android:name="com.kingominho.monchridiario.AddDailyEntry"
+        android:id="@+id/addUpdateViewDailyEntry"
+        android:name="com.kingominho.monchridiario.AddUpdateViewDailyEntry"
         android:label="@string/navigation_add_daily_entry"
-        tools:layout="@layout/fragment_add_daily_entry" />
+        tools:layout="@layout/fragment_add_daily_entry" >
+        <argument
+            android:name="action"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/addTask"
+        android:name="com.kingominho.monchridiario.AddTask"
+        android:label="fragment_add_task"
+        tools:layout="@layout/fragment_add_task" >
+        <argument
+            android:name="category_name"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="null" />
+    </fragment>
+    <fragment
+        android:id="@+id/viewCategory"
+        android:name="com.kingominho.monchridiario.ViewCategory"
+        android:label="fragment_view_category"
+        tools:layout="@layout/fragment_view_category" >
+        <action
+            android:id="@+id/action_viewCategory_to_addTask"
+            app:destination="@id/addTask" />
+        <argument
+            android:name="category_id"
+            app:argType="string" />
+    </fragment>
 </navigation>

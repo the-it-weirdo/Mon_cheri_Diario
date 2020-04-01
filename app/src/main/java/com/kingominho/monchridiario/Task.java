@@ -44,11 +44,11 @@ public class Task {
         this.category_id = category_id;
     }
 
-    public boolean isIs_finished() {
+    public boolean is_finished() {
         return is_finished;
     }
 
-    public void setIs_finished(boolean is_finished) {
+    public void set_finished(boolean is_finished) {
         this.is_finished = is_finished;
     }
 

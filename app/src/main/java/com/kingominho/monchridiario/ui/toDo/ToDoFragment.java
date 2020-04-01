@@ -11,6 +11,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -100,6 +101,11 @@ public class ToDoFragment extends Fragment {
                 documentSnapshot.getReference();
                 Toast.makeText(getContext(), "Position: " + position + " ID: " + id + " clicked." +
                                 " path= " + path, Toast.LENGTH_SHORT).show();
+
+                Bundle bundle = new Bundle();
+                bundle.putString("category_id", id);
+                bundle.putString(Category.KEY_CATEGORY_NAME, category.getCategoryName());
+                Navigation.findNavController(getView()).navigate(R.id.viewCategory, bundle);
             }
         });
     }
