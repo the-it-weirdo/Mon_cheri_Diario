@@ -103,6 +103,7 @@ public class CategoryAdapter extends FirestoreRecyclerAdapter<Category, Category
     }
 
     public void deleteItem(int position) {
+        TaskManager.getInstance().deleteAllTask(getSnapshots().getSnapshot(position).getId());
         getSnapshots().getSnapshot(position).getReference().delete();
     }
 

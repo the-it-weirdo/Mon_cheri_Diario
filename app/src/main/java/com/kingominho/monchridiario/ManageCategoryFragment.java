@@ -130,6 +130,7 @@ public class ManageCategoryFragment extends Fragment {
             @Override
             public void OnDeleteClick(DocumentSnapshot documentSnapshot, int position) {
                 //categoryAdapter.deleteItem(position);
+                TaskManager.getInstance().deleteAllTask(documentSnapshot.getId());
                 categoryManager.deleteCategory(documentSnapshot.getReference());
             }
         });

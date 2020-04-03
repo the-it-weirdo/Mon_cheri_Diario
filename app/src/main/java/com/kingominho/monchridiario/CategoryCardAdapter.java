@@ -34,18 +34,17 @@ public class CategoryCardAdapter extends FirestoreRecyclerAdapter<Category, Cate
     protected void onBindViewHolder(@NonNull final CategoryCardHolder holder, int position, @NonNull Category model) {
         holder.progressBar.setVisibility(View.VISIBLE);
         holder.textViewCategoryName.setText(model.getCategoryName());
-        //holder.textViewTaskRemaining.setText(position);
         String id = getSnapshots().getSnapshot(position).getId();
-        //TaskManager.getRemainingTaskCount()
         TaskManager taskManager = TaskManager.getInstance();
-        taskManager.getTaskCountQuery(id, true).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                holder.progressBar.setVisibility(View.GONE);
-                String s = queryDocumentSnapshots.size() + " tasks remaining";
-                holder.textViewTaskRemaining.setText(s);
-            }
-        })
+        taskManager.getTaskCountQuery(id, false).get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        holder.progressBar.setVisibility(View.GONE);
+                        String s = queryDocumentSnapshots.size() + " tasks remaining";
+                        holder.textViewTaskRemaining.setText(s);
+                    }
+                })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {

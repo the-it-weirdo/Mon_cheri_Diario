@@ -1,18 +1,20 @@
 package com.kingominho.monchridiario;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Task {
 
     public static final String KEY_DESCRIPTION = "description";
     public static final String KEY_CATEGORY_ID = "category_id";
-    public static final String KEY_IS_FINISHED = "is_finished";
+    public static final String KEY_FINISHED = "finished";
     public static final String KEY_FINISH_BY = "finish_by";
     public static final String KEY_PRIORITY = "priority";
 
     private String description;
     private String category_id;
-    private boolean is_finished;
+    private boolean finished;
     private Date finish_by;
     private int priority;
 
@@ -20,10 +22,10 @@ public class Task {
         //required empty constructor
     }
 
-    public Task(String description, String category_id, boolean is_finished, Date finish_by, int priority) {
+    public Task(String description, String category_id, boolean finished, Date finish_by, int priority) {
         this.description = description;
         this.category_id = category_id;
-        this.is_finished = is_finished;
+        this.finished = finished;
         this.finish_by = finish_by;
         this.priority = priority;
     }
@@ -44,12 +46,12 @@ public class Task {
         this.category_id = category_id;
     }
 
-    public boolean is_finished() {
-        return is_finished;
+    public boolean isFinished() {
+        return finished;
     }
 
-    public void set_finished(boolean is_finished) {
-        this.is_finished = is_finished;
+    public void setFinished(boolean finished) {
+        this.finished = finished;
     }
 
     public Date getFinish_by() {
@@ -66,5 +68,25 @@ public class Task {
 
     public void setPriority(int priority) {
         this.priority = priority;
+    }
+
+    /*public Map<String, Object> toMap() {
+        Map<String, Object> map = new HashMap<>();
+        map.put(DATE_KEY, this.date);
+        map.put(TIME_KEY, this.time);
+        map.put(ENTRY_KEY, this.entry);
+        map.put(USER_ID_KEY, this.user_id);
+        map.put(TIME_STAMP_KEY, this.timeStamp);
+        return map;
+    }*/
+
+    public Map<String, Object> toMap() {
+        Map<String,  Object> map = new HashMap<>();
+        map.put(KEY_DESCRIPTION, description);
+        map.put(KEY_CATEGORY_ID, category_id);
+        map.put(KEY_FINISH_BY, finish_by);
+        map.put(KEY_FINISHED, finished);
+        map.put(KEY_PRIORITY, priority);
+        return map;
     }
 }

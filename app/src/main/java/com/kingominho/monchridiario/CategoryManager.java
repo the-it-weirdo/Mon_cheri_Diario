@@ -5,15 +5,19 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.WriteBatch;
 
 public class CategoryManager {
     private final static String TAG = "CategoryManager: ";
@@ -38,7 +42,15 @@ public class CategoryManager {
         return mInstance;
     }
 
+    public Query getAllCategories(String userId) {
+        Query query = categoryCollectionRef.whereEqualTo(Category.KEY_USER_ID, userId)
+                .orderBy(Category.KEY_CATEGORY_NAME);
+        return query;
+    }
+
     public FirestoreRecyclerOptions<Category> getAllCategoriesOptions() {
+        //Query query = getAllCategories(userId);
+
         Query query = categoryCollectionRef.whereEqualTo(Category.KEY_USER_ID,
                 FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .orderBy(Category.KEY_CATEGORY_NAME);
@@ -54,7 +66,26 @@ public class CategoryManager {
         FirestoreRecyclerOptions<Category> options = new FirestoreRecyclerOptions.Builder<Category>()
                 .setQuery(query, Category.class)
                 .build();
+        Log.d(TAG, "getAllCategoriesOptions: " + options.getSnapshots().size());
         return options;
+    }
+
+    public void deleteAllCategories(String userId) {
+        Query query = categoryCollectionRef.whereEqualTo(Category.KEY_USER_ID, userId);
+        final WriteBatch writeBatch = db.batch();
+        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()) {
+                    for(DocumentSnapshot documentSnapshot: task.getResult().getDocuments())
+                    {
+                        TaskManager.getInstance().deleteAllTask(documentSnapshot.getId());
+                        writeBatch.delete(documentSnapshot.getReference());
+                    }
+                    writeBatch.commit();
+                }
+            }
+        });
     }
 
 
