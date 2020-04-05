@@ -1,15 +1,22 @@
 package com.kingominho.monchridiario;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.WriteBatch;
 
 public class DailyEntryManager {
 
@@ -33,9 +40,8 @@ public class DailyEntryManager {
         return instance;
     }
 
-    public FirestoreRecyclerOptions<DailyEntry> getAllDailyEntriesOptions() {
-        Query query = dailyEntryCollectionRef.whereEqualTo(DailyEntry.USER_ID_KEY,
-                FirebaseAuth.getInstance().getCurrentUser().getUid())
+    public FirestoreRecyclerOptions<DailyEntry> getAllDailyEntriesOptions(String user_id) {
+        Query query = dailyEntryCollectionRef.whereEqualTo(DailyEntry.USER_ID_KEY, user_id)
                 .orderBy(DailyEntry.TIME_STAMP_KEY, Query.Direction.DESCENDING);
 
         FirestoreRecyclerOptions<DailyEntry> options = new FirestoreRecyclerOptions.Builder<DailyEntry>()
@@ -64,9 +70,61 @@ public class DailyEntryManager {
                 });
     }
 
+    private DailyEntry dailyEntry;
+
+    public DailyEntry getDailyEntryById(String id) {
+        dailyEntryCollectionRef.document(id).get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        dailyEntry = documentSnapshot.toObject(DailyEntry.class);
+                    }
+                });
+
+        Log.d(TAG, "getDailyEntryById: de" + dailyEntry.getEntry());
+        return dailyEntry;
+    }
+
+    public CollectionReference getDailyEntryCollectionRef() {
+        return dailyEntryCollectionRef;
+    }
+
+    private DocumentReference documentReference;
+
+    public DocumentReference getReferenceById(String id) {
+        dailyEntryCollectionRef.document(id).get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        documentReference = documentSnapshot.getReference();
+                    }
+                });
+
+        Log.d(TAG, "getReferenceById: " + documentReference.getId());
+
+        return documentReference;
+    }
+
     public void updateDailyEntry(DocumentReference documentReference, DailyEntry dailyEntry) {
 
         documentReference.update(dailyEntry.toMap())
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                    }
+                });
+    }
+
+    public void updateDailyEntry(DailyEntry dailyEntry) {
+        dailyEntryCollectionRef.document(dailyEntry.getDaily_entry_id())
+                .update(dailyEntry.toMap())
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
@@ -95,5 +153,21 @@ public class DailyEntryManager {
 
                     }
                 });
+    }
+
+    public void deleteAllDailyEntry(String user_id) {
+        Query query = dailyEntryCollectionRef.whereEqualTo(DailyEntry.USER_ID_KEY, user_id);
+        final WriteBatch writeBatch = db.batch();
+        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()) {
+                    for (DocumentSnapshot documentSnapshot : task.getResult().getDocuments()) {
+                        writeBatch.delete(documentSnapshot.getReference());
+                    }
+                    writeBatch.commit();
+                }
+            }
+        });
     }
 }

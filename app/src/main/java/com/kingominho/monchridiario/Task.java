@@ -11,23 +11,26 @@ public class Task {
     public static final String KEY_FINISHED = "finished";
     public static final String KEY_FINISH_BY = "finish_by";
     public static final String KEY_PRIORITY = "priority";
+    public static final String KEY_USER_ID = "user_id";
 
     private String description;
     private String category_id;
     private boolean finished;
     private Date finish_by;
     private int priority;
+    private String user_id;
 
     public Task() {
         //required empty constructor
     }
 
-    public Task(String description, String category_id, boolean finished, Date finish_by, int priority) {
+    public Task(String description, String category_id, boolean finished, Date finish_by, int priority, String uid) {
         this.description = description;
         this.category_id = category_id;
         this.finished = finished;
         this.finish_by = finish_by;
         this.priority = priority;
+        this.user_id = uid;
     }
 
     public String getDescription() {
@@ -70,6 +73,14 @@ public class Task {
         this.priority = priority;
     }
 
+    public String getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(String user_id) {
+        this.user_id = user_id;
+    }
+
     /*public Map<String, Object> toMap() {
         Map<String, Object> map = new HashMap<>();
         map.put(DATE_KEY, this.date);
@@ -87,6 +98,7 @@ public class Task {
         map.put(KEY_FINISH_BY, finish_by);
         map.put(KEY_FINISHED, finished);
         map.put(KEY_PRIORITY, priority);
+        map.put(KEY_USER_ID, user_id);
         return map;
     }
 }

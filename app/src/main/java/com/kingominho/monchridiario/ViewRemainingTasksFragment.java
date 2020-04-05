@@ -98,7 +98,6 @@ public class ViewRemainingTasksFragment extends Fragment {
 
     private void setUpRecyclerView(RecyclerView recyclerView, ProgressBar progressBar, TaskAdapter taskAdapter) {
         recyclerView.setHasFixedSize(true);
-        recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(taskAdapter);
         progressBar.setVisibility(View.GONE);

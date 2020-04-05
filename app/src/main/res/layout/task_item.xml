@@ -25,29 +25,53 @@
             android:layout_toEndOf="@id/checkbox"
             android:textSize="20sp"
             android:layout_toStartOf="@id/button_delete"
+            android:textStyle="bold"
             android:text="hello"/>
 
         <TextView
-            android:id="@+id/text_view_finish_by_date"
+            android:id="@+id/finish_by"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_below="@id/text_view_description"
             android:layout_alignStart="@id/text_view_description"
+            android:textSize="20sp"
+            android:text="Finish by: "/>
+
+        <TextView
+            android:id="@+id/text_view_finish_by_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/finish_by"
+            android:layout_alignBottom="@id/finish_by"
+            android:layout_toEndOf="@id/finish_by"
             android:layout_alignEnd="@id/text_view_description"
             android:textSize="20sp"
-            android:text="Finish by: 24 Mar, 2020 10:23 A.M." />
+            android:text="24 Mar, 2020 10:23 A.M." />
+
+        <TextView
+            android:id="@+id/priority"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_below="@id/text_view_finish_by_date"
+            android:layout_alignStart="@id/finish_by"
+            android:layout_alignEnd="@id/finish_by"
+            android:textSize="20sp"
+            android:text="Priority: " />
 
         <TextView
             android:id="@+id/text_view_priority"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_alignTop="@id/priority"
+            android:layout_alignBottom="@id/priority"
+            android:layout_toEndOf="@id/priority"
             android:layout_below="@id/text_view_finish_by_date"
             android:layout_alignStart="@id/text_view_finish_by_date"
-            android:layout_alignEnd="@id/text_view_description"
+            android:layout_alignEnd="@id/text_view_finish_by_date"
             android:textSize="20sp"
-            android:text="Priority: 8" />
+            android:text="8" />
 
         <ImageButton
             android:id="@+id/button_delete"

@@ -3,6 +3,7 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -50,21 +51,29 @@
 
     </androidx.cardview.widget.CardView>
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/to_do_card"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@id/margin_vertical"
         android:layout_below="@id/user_details_card"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_margin="8dp"
-        android:elevation="20dp"
-        app:cardCornerRadius="20dp">
+        android:orientation="vertical">
 
-        <include layout="@layout/fragment_view_task_by_category" />
+        <TextView
+            style="@style/TextAppearance.AppCompat.Subhead"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="Tasks"
+            android:textSize="15sp"
+            android:textStyle="bold|italic" />
 
-    </androidx.cardview.widget.CardView>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view_tasks"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:listitem="@layout/task_item" />
+
+    </LinearLayout>
 
     <View
         android:id="@+id/margin_vertical"
@@ -74,8 +83,7 @@
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true" />
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/daily_entry_card"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/margin_vertical"
@@ -83,9 +91,23 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_margin="8dp"
-        android:elevation="20dp"
-        app:cardCornerRadius="20dp">
+        android:orientation="vertical">
 
-        <include layout="@layout/fragment_daily_entries" />
-    </androidx.cardview.widget.CardView>
+        <TextView
+            style="@style/TextAppearance.AppCompat.Subhead"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="Daily Entries"
+            android:textSize="15sp"
+            android:textStyle="bold|italic" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view_daily_entry"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:listitem="@layout/daily_entry_card_layout" />
+
+    </LinearLayout>
+
 </RelativeLayout>

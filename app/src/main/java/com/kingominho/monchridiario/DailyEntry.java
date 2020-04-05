@@ -1,9 +1,14 @@
 package com.kingominho.monchridiario;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import com.google.firebase.database.Exclude;
+
 import java.util.HashMap;
 import java.util.Map;
 
-public class DailyEntry {
+public class DailyEntry implements Parcelable {
 
     public static final String DATE_KEY = "date";
     public static final String TIME_KEY = "time";
@@ -11,14 +16,70 @@ public class DailyEntry {
     public static final String TIME_STAMP_KEY = "timeStamp";
     public static final String USER_ID_KEY = "user_id";
 
+    public static final String DAILY_ENTRY_ID_KEY = "daily_entry_id";
+
     private String date;
     private String time;
     private String entry;
     private String timeStamp;
     private String user_id;
 
+    @Exclude
+    private String daily_entry_id;
+
     public DailyEntry() {
         //required empty constructor
+    }
+
+    protected DailyEntry(Parcel parcel) {
+        this.date = parcel.readString();
+        this.time = parcel.readString();
+        this.entry = parcel.readString();
+        this.timeStamp = parcel.readString();
+        this.user_id = parcel.readString();
+    }
+
+    @Exclude
+    public static final Creator<DailyEntry> CREATOR = new Creator<DailyEntry>() {
+        @Override
+        public DailyEntry createFromParcel(Parcel source) {
+            return new DailyEntry(source);
+        }
+
+        @Override
+        public DailyEntry[] newArray(int size) {
+            return new DailyEntry[size];
+        }
+    };
+
+    @Exclude
+    public static Creator<DailyEntry> getCREATOR() {
+        return CREATOR;
+    }
+
+
+    @Override
+    public int describeContents() {
+        return hashCode();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.date);
+        dest.writeString(this.time);
+        dest.writeString(this.entry);
+        dest.writeString(this.timeStamp);
+        dest.writeString(this.user_id);
+    }
+
+    @Exclude
+    public String getDaily_entry_id() {
+        return daily_entry_id;
+    }
+
+    @Exclude
+    public void setDaily_entry_id(String daily_entry_id) {
+        this.daily_entry_id = daily_entry_id;
     }
 
     public DailyEntry(String date, String time, String entry, String timeStamp, String user_id) {

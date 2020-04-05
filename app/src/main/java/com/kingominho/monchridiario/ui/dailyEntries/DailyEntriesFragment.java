@@ -29,30 +29,33 @@ public class DailyEntriesFragment extends Fragment {
     private final String TAG = "DailyEntriesFragment: ";
 
 
-    private DailyEntryAdapter dailyEntryAdapter;
-    private DailyEntryManager dailyEntryManager;
+    private DailyEntriesViewModel dailyEntriesViewModel;
 
     private FloatingActionButton fabAddDailyEntry;
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
 
+    LinearLayoutManager layoutManager;
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_daily_entries, container, false);
+        dailyEntriesViewModel = ViewModelProviders.of(this).get(DailyEntriesViewModel.class);
         fabAddDailyEntry = root.findViewById(R.id.fab_add_daily_entry);
         recyclerView = root.findViewById(R.id.recycler_view);
         progressBar = root.findViewById(R.id.progress_circle);
 
-        dailyEntryManager = DailyEntryManager.getInstance();
-        dailyEntryAdapter = new DailyEntryAdapter(dailyEntryManager.getAllDailyEntriesOptions());
-        dailyEntryAdapter.startListening();
+        dailyEntriesViewModel.getDailyEntryAdapter().startListening();
+        layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
 
         return root;
     }
 
     @Override
     public void onResume() {
-        dailyEntryAdapter.startListening();
+        Log.d(TAG, "onResume: position = " + dailyEntriesViewModel.getPosition().getValue());
+        layoutManager.scrollToPosition(dailyEntriesViewModel.getPosition().getValue());
+        dailyEntriesViewModel.getDailyEntryAdapter().startListening();
         Log.d(TAG, "onResume: dailyEntryAdapter to start listening.");
         super.onResume();
     }
@@ -60,7 +63,7 @@ public class DailyEntriesFragment extends Fragment {
     @Override
     public void onStop() {
         Log.d(TAG, "onStop: dailyEntryAdapter to stop listening.");
-        dailyEntryAdapter.stopListening();
+        dailyEntriesViewModel.getDailyEntryAdapter().stopListening();
         super.onStop();
     }
 
@@ -75,14 +78,14 @@ public class DailyEntriesFragment extends Fragment {
                 Navigation.findNavController(v).navigate(R.id.addUpdateViewDailyEntry, bundle);
             }
         });
-        Log.d(TAG, "onViewCreated: " + dailyEntryAdapter.getItemCount());
+        Log.d(TAG, "onViewCreated: " + dailyEntriesViewModel.getDailyEntryAdapter().getItemCount());
         setUpRecyclerView();
     }
 
     private void setUpRecyclerView() {
+        Log.d(TAG, "setUpRecyclerView() called.");
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(),
-                LinearLayoutManager.HORIZONTAL, false));
+        recyclerView.setLayoutManager(layoutManager);
 
         LinearSnapHelper linearSnapHelper = new LinearSnapHelper() {
             @Override
@@ -112,31 +115,53 @@ public class DailyEntriesFragment extends Fragment {
                 final int firstItem = 0;
                 final int lastItem = layoutManager.getItemCount() - 1;
                 targetPosition = Math.min(lastItem, Math.max(targetPosition, firstItem));
+                dailyEntriesViewModel.getPosition().setValue(targetPosition);
                 return targetPosition;
             }
         };
         linearSnapHelper.attachToRecyclerView(recyclerView);
-        recyclerView.setAdapter(dailyEntryAdapter);
+        recyclerView.setAdapter(dailyEntriesViewModel.getDailyEntryAdapter());
         progressBar.setVisibility(View.GONE);
 
-        dailyEntryAdapter.setOnContextMenuItemClickListener(new DailyEntryAdapter.OnContextMenuItemClickListener() {
-            @Override
-            public void onViewEntryClick(DocumentSnapshot documentSnapshot, int position) {
+        dailyEntriesViewModel.getDailyEntryAdapter()
+                .setOnContextMenuItemClickListener(new DailyEntryAdapter.OnContextMenuItemClickListener() {
+                    @Override
+                    public void onViewEntryClick(DocumentSnapshot documentSnapshot, int position) {
+                        onViewEntryClick(documentSnapshot, position);
+                    }
 
-            }
+                    @Override
+                    public void onUpdateEntryClick(DocumentSnapshot documentSnapshot, int position) {
+                        dailyEntriesViewModel.getPosition().setValue(position);
+                        DailyEntry dailyEntry = documentSnapshot.toObject(DailyEntry.class);
+                        dailyEntry.setDaily_entry_id(documentSnapshot.getId());
+                        Bundle bundle = new Bundle();
+                        bundle.putParcelable("DailyEntry", dailyEntry);
+                        bundle.putString("action", "update");
+                        Navigation.findNavController(getView()).navigate(R.id.addUpdateViewDailyEntry, bundle);
+                    }
 
-            @Override
-            public void onUpdateEntryClick(DocumentSnapshot documentSnapshot, int position) {
-                DailyEntry dailyEntry =documentSnapshot.toObject(DailyEntry.class);
-                String entry = "Debaleen";
-                dailyEntry.setEntry(entry);
-                dailyEntryManager.updateDailyEntry(documentSnapshot.getReference(), dailyEntry);
-            }
+                    @Override
+                    public void onDeleteEntryClick(DocumentSnapshot documentSnapshot, int position) {
+                        dailyEntriesViewModel.getPosition().setValue(position - 1);
+                        dailyEntriesViewModel.getDailyEntryManager().deleteDailyEntry(documentSnapshot.getReference());
+                    }
+                });
+        dailyEntriesViewModel.getDailyEntryAdapter()
+                .setOnClickListener(new DailyEntryAdapter.OnClickListener() {
+                    @Override
+                    public void OnClick(DocumentSnapshot documentSnapshot, int position) {
+                        onViewEntryClick(documentSnapshot, position);
+                    }
+                });
+    }
 
-            @Override
-            public void onDeleteEntryClick(DocumentSnapshot documentSnapshot, int position) {
-                dailyEntryManager.deleteDailyEntry(documentSnapshot.getReference());
-            }
-        });
+    private void onViewEntryClick(DocumentSnapshot documentSnapshot, int position) {
+        dailyEntriesViewModel.getPosition().setValue(position);
+        Bundle bundle = new Bundle();
+        bundle.putString("action", "view");
+        bundle.putString("id", documentSnapshot.getId());
+        bundle.putParcelable("DailyEntry", documentSnapshot.toObject(DailyEntry.class));
+        Navigation.findNavController(getView()).navigate(R.id.addUpdateViewDailyEntry, bundle);
     }
 }

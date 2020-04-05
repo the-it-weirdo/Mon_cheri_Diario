@@ -18,10 +18,14 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.kingominho.monchridiario.AccountManager;
+import com.kingominho.monchridiario.CategoryManager;
 import com.kingominho.monchridiario.ChooseProfilePicture;
+import com.kingominho.monchridiario.DailyEntry;
+import com.kingominho.monchridiario.DailyEntryManager;
 import com.kingominho.monchridiario.LoginActivity;
 import com.kingominho.monchridiario.R;
 import com.squareup.picasso.Picasso;
@@ -133,22 +137,15 @@ public class ToolsFragment extends Fragment {
 
 
     private void deleteAccountButtonClicked() {
-        FirebaseAuth.getInstance().signOut();
-        Toast.makeText(getContext(), "Account not deleted!!", Toast.LENGTH_SHORT).show();
+        manageCategoriesButton.setEnabled(false);
+        changeProfilePictureButton.setEnabled(false);
+        changePasswordButton.setEnabled(false);
+        deleteAccountButton.setEnabled(false);
+
+        AccountManager.getInstance().deleteAccount(FirebaseAuth.getInstance().getCurrentUser());
+        Toast.makeText(getContext(), "User Account and data deleted.", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(getContext(), LoginActivity.class);
         startActivity(intent);
         getActivity().finish();
     }
-
-    /*@Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
-                && data != null && data.getData() != null) {
-            Uri mImageUri = data.getData();
-            accountManager.updateProfilePicture(FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl().toString(),
-                    mImageUri);
-        }
-    }*/
 }

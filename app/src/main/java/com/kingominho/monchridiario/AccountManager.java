@@ -2,6 +2,7 @@ package com.kingominho.monchridiario;
 
 import android.net.Uri;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -131,6 +132,28 @@ public class AccountManager {
 
     public void setAccountManagerTaskListener(AccountManagerTaskListener accountManagerTaskListener) {
         this.accountManagerTaskListener = accountManagerTaskListener;
+    }
+
+    public void deleteAccount(FirebaseUser user) {
+        final String uid = user.getUid();
+        final String url = user.getPhotoUrl().toString();
+        FirebaseAuth.getInstance().getCurrentUser().delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()) {
+                    CategoryManager.getInstance().deleteAllCategories(uid);
+                    DailyEntryManager.getInstance().deleteAllDailyEntry(uid);
+                    deleteProfilePicture(url);
+                    Log.d(TAG, "onComplete: Task successful. Account deleted.");
+                }
+                else {
+                    Log.e(TAG, "onComplete: Task failed.", task.getException());
+                    if(FirebaseAuth.getInstance().getCurrentUser()!=null) {
+                        FirebaseAuth.getInstance().signOut();
+                    }
+                }
+            }
+        });
     }
 
     public interface AccountManagerTaskListener {

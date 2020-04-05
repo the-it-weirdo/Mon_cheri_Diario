@@ -10,6 +10,7 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -68,6 +69,24 @@ public class TaskManager {
         return query;
     }
 
+    public FirestoreRecyclerOptions<Task> getAllTaskOfUserOptions(String user_id, boolean isFinished) {
+        Query query = taskCollectionRef.whereEqualTo(Task.KEY_USER_ID, user_id)
+                .whereEqualTo(Task.KEY_FINISHED, isFinished)
+                .orderBy(Task.KEY_FINISH_BY)
+                .orderBy(Task.KEY_PRIORITY);
+        query.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                Log.d(TAG, "onSuccessTaskOfUserOptions: Query returned: " + queryDocumentSnapshots.size() + " records");
+            }
+        });
+        FirestoreRecyclerOptions<Task> options = new FirestoreRecyclerOptions.Builder<Task>()
+                .setQuery(query, Task.class)
+                .build();
+        Log.d(TAG, "getAllTaskOfUserOptions: " + options.getSnapshots().size());
+        return options;
+    }
+
     public void deleteAllTask(String categoryId) {
         Query query = taskCollectionRef.whereEqualTo(Task.KEY_CATEGORY_ID, categoryId);
         final WriteBatch writeBatch = db.batch();
@@ -86,7 +105,8 @@ public class TaskManager {
 
 
     public void createNewTask(String description, String category_id, Date finish_by, int priority) {
-        Task task = new Task(description, category_id, false, finish_by, priority);
+        Task task = new Task(description, category_id, false, finish_by, priority,
+                FirebaseAuth.getInstance().getCurrentUser().getUid());
 
         taskCollectionRef.add(task)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {

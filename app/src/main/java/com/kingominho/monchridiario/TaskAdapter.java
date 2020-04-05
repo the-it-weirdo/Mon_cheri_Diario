@@ -30,10 +30,9 @@ public class TaskAdapter extends FirestoreRecyclerAdapter<Task, TaskAdapter.Task
     @Override
     protected void onBindViewHolder(@NonNull TaskHolder holder, int position, @NonNull Task model) {
         holder.textViewDescription.setText(model.getDescription());
-        String date = "Finish by: " +
-                new SimpleDateFormat("hh:mm a dd/MMM/yyyy", Locale.getDefault()).format(model.getFinish_by());
+        String date = new SimpleDateFormat("hh:mm a dd/MMM/yyyy", Locale.getDefault()).format(model.getFinish_by());
         holder.textViewFinishByDate.setText(date);
-        holder.textViewPriority.setText("Priority: " + model.getPriority());
+        holder.textViewPriority.setText(String.valueOf(model.getPriority()));
         holder.checkBox.setChecked(model.isFinished());
         if(model.isFinished()) {
             holder.textViewDescription.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);

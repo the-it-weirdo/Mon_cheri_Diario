@@ -260,7 +260,7 @@ public class AddTask extends Fragment {
             String s = date1 + " " + time;
             Date date;
             try {
-                date = new SimpleDateFormat("dd/MMM/yyyy hh:mm a").parse(s);
+                date = new SimpleDateFormat("dd/MMM/yyyy hh:mm a", Locale.getDefault()).parse(s);
             } catch (ParseException e) {
                 date = null;
                 Log.d(TAG, "saveClicked: Invalid date format", e);

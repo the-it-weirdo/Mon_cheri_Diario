@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -19,6 +20,9 @@ import android.widget.EditText;
 import android.widget.TextClock;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentSnapshot;
 
 
 /**
@@ -32,6 +36,7 @@ public class AddUpdateViewDailyEntry extends Fragment {
     private TextView textViewDate;
     private TextView textViewTime;
     private EditText editTextEntry;
+    private TextView textViewViewEntry;
 
     private String action;
 
@@ -57,6 +62,7 @@ public class AddUpdateViewDailyEntry extends Fragment {
         textViewDate = view.findViewById(R.id.date);
         textViewTime = view.findViewById(R.id.time);
         editTextEntry = view.findViewById(R.id.edit_text_daily_entry);
+        textViewViewEntry = view.findViewById(R.id.textview_view_entry);
         action = "";
         try {
             action = getArguments().getString("action");
@@ -66,38 +72,47 @@ public class AddUpdateViewDailyEntry extends Fragment {
             Log.e(TAG, "onViewCreated: Error", e);
         }
 
-        Toast.makeText(getContext(), action, Toast.LENGTH_SHORT).show();
-
         if (action.compareTo("add") == 0) {
             addUI();
         } else if (action.compareTo("update") == 0) {
-            updateUI(/*DailyEntry entry*/);
+            DailyEntry dailyEntry = getArguments().getParcelable("DailyEntry");
+            updateUI(dailyEntry);
         } else if (action.compareTo("view") == 0) {
-            viewUI(/*DailyEntry entry*/);
+            DailyEntry dailyEntry = getArguments().getParcelable("DailyEntry");
+            viewUI(dailyEntry);
         }
     }
 
     private void addUI() {
-        String currentDate = textClockDate.getText().toString();
-        String currentTime = textClockTime.getText().toString();
-        String entry = editTextEntry.getText().toString();
-        //DailyEntryManager.addDailyEntry(entry, currentDate, currentTime);
+        textViewDate.setVisibility(View.GONE);
+        textViewTime.setVisibility(View.GONE);
+        textViewViewEntry.setVisibility(View.GONE);
     }
 
-    private void updateUI(/*DailyEntry entry*/) {
+    private void updateUI(DailyEntry entry) {
+        textClockTime.setVisibility(View.GONE);
+        textClockDate.setVisibility(View.GONE);
+        textViewDate.setVisibility(View.VISIBLE);
+        textViewTime.setVisibility(View.VISIBLE);
+        textViewViewEntry.setVisibility(View.GONE);
+
+        textViewDate.setText(entry.getDate());
+        textViewTime.setText(entry.getTime());
+        editTextEntry.setText(entry.getEntry());
+    }
+
+    private void viewUI(DailyEntry entry) {
+        editTextEntry.setVisibility(View.GONE);
+        textViewViewEntry.setVisibility(View.VISIBLE);
         textClockTime.setVisibility(View.GONE);
         textClockDate.setVisibility(View.GONE);
         textViewDate.setVisibility(View.VISIBLE);
         textViewTime.setVisibility(View.VISIBLE);
 
-        textViewDate.setText(/*entry.getDate()*/"");
-        textViewTime.setText(/*entry.getTime()*/"");
-        editTextEntry.setText(/*entry.getEntry()*/"");
-    }
-
-    private void viewUI(/*DailyEntry entry*/) {
-        updateUI(/*DailyEntry entry*/);
-        editTextEntry.setEnabled(false);
+        textViewViewEntry.setMovementMethod(new ScrollingMovementMethod());
+        textViewViewEntry.setText(entry.getEntry());
+        textViewDate.setText(entry.getDate());
+        textViewTime.setText(entry.getTime());
     }
 
     @Override
@@ -120,7 +135,13 @@ public class AddUpdateViewDailyEntry extends Fragment {
             DailyEntryManager.getInstance().addDailyEntry(currentDate, currentTime, entry);
             Navigation.findNavController(getView()).navigateUp();
         } else if (action.compareTo("update") == 0) {
+            String entry = editTextEntry.getText().toString();
 
+            DailyEntryManager dailyEntryManager = DailyEntryManager.getInstance();
+            DailyEntry dailyEntry = getArguments().getParcelable("DailyEntry");
+            dailyEntry.setEntry(entry);
+            dailyEntryManager.updateDailyEntry(dailyEntry);
+            Navigation.findNavController(getView()).navigateUp();
         }
     }
 
@@ -129,4 +150,12 @@ public class AddUpdateViewDailyEntry extends Fragment {
         inflater.inflate(R.menu.menu_save, menu);
     }
 
+    @Override
+    public void onPrepareOptionsMenu(@NonNull Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        getActivity().invalidateOptionsMenu();
+        if(action.compareTo("view")==0) {
+            menu.findItem(R.id.action_save).setVisible(false);
+        }
+    }
 }

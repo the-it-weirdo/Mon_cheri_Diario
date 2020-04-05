@@ -17,7 +17,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 
 public class DailyEntryAdapter extends FirestoreRecyclerAdapter<DailyEntry, DailyEntryAdapter.DailyEntryHolder> {
 
-    private OnContextMenuItemClickListener listener;
+    private OnContextMenuItemClickListener onContextMenuItemClickListener;
+    private OnClickListener onClickListener;
 
     /**
      * Create a new RecyclerView adapter that listens to a Firestore Query.  See {@link
@@ -62,9 +63,10 @@ public class DailyEntryAdapter extends FirestoreRecyclerAdapter<DailyEntry, Dail
         @Override
         public void onClick(View v) {
             int position = getAdapterPosition();
-            listener.onViewEntryClick(getSnapshots().getSnapshot(position), position);
+            //onContextMenuItemClickListener.onViewEntryClick(getSnapshots().getSnapshot(position), position);
             //DocumentSnapshot snapshot = getSnapshots().getSnapshot(position);
             //DocumentReference reference = snapshot.getReference()
+            onClickListener.OnClick(getSnapshots().getSnapshot(position), position);
         }
 
         @Override
@@ -81,19 +83,19 @@ public class DailyEntryAdapter extends FirestoreRecyclerAdapter<DailyEntry, Dail
 
         @Override
         public boolean onMenuItemClick(MenuItem item) {
-            if (listener != null) {
+            if (onContextMenuItemClickListener != null) {
                 int position = getAdapterPosition();
 
                 if (position != RecyclerView.NO_POSITION) {
                     switch (item.getItemId()) {
                         case 1:
-                            listener.onViewEntryClick(getSnapshots().getSnapshot(position), position);
+                            onContextMenuItemClickListener.onViewEntryClick(getSnapshots().getSnapshot(position), position);
                             return true;
                         case 2:
-                            listener.onUpdateEntryClick(getSnapshots().getSnapshot(position), position);
+                            onContextMenuItemClickListener.onUpdateEntryClick(getSnapshots().getSnapshot(position), position);
                             return true;
                         case 3:
-                            listener.onDeleteEntryClick(getSnapshots().getSnapshot(position), position);
+                            onContextMenuItemClickListener.onDeleteEntryClick(getSnapshots().getSnapshot(position), position);
                             return true;
                         default:
                             return false;
@@ -113,6 +115,14 @@ public class DailyEntryAdapter extends FirestoreRecyclerAdapter<DailyEntry, Dail
     }
 
     public void setOnContextMenuItemClickListener(OnContextMenuItemClickListener listener) {
-        this.listener = listener;
+        this.onContextMenuItemClickListener = listener;
+    }
+
+    public void setOnClickListener(OnClickListener listener) {
+        this.onClickListener = listener;
+    }
+
+    public interface OnClickListener {
+        void OnClick(DocumentSnapshot documentSnapshot, int position);
     }
 }
