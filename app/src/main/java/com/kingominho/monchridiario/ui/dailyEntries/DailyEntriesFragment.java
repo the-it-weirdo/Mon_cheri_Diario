@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
@@ -34,6 +35,7 @@ public class DailyEntriesFragment extends Fragment {
     private FloatingActionButton fabAddDailyEntry;
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
+    private TextView emptyTextView;
 
     LinearLayoutManager layoutManager;
 
@@ -44,6 +46,7 @@ public class DailyEntriesFragment extends Fragment {
         fabAddDailyEntry = root.findViewById(R.id.fab_add_daily_entry);
         recyclerView = root.findViewById(R.id.recycler_view);
         progressBar = root.findViewById(R.id.progress_circle);
+        emptyTextView = root.findViewById(R.id.empty_text_view);
 
         dailyEntriesViewModel.getDailyEntryAdapter().startListening();
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
@@ -121,13 +124,12 @@ public class DailyEntriesFragment extends Fragment {
         };
         linearSnapHelper.attachToRecyclerView(recyclerView);
         recyclerView.setAdapter(dailyEntriesViewModel.getDailyEntryAdapter());
-        progressBar.setVisibility(View.GONE);
 
         dailyEntriesViewModel.getDailyEntryAdapter()
                 .setOnContextMenuItemClickListener(new DailyEntryAdapter.OnContextMenuItemClickListener() {
                     @Override
                     public void onViewEntryClick(DocumentSnapshot documentSnapshot, int position) {
-                        onViewEntryClick(documentSnapshot, position);
+                        viewEntry(documentSnapshot, position);
                     }
 
                     @Override
@@ -151,12 +153,19 @@ public class DailyEntriesFragment extends Fragment {
                 .setOnClickListener(new DailyEntryAdapter.OnClickListener() {
                     @Override
                     public void OnClick(DocumentSnapshot documentSnapshot, int position) {
-                        onViewEntryClick(documentSnapshot, position);
+                        viewEntry(documentSnapshot, position);
+                    }
+
+                    @Override
+                    public void onDataChanged() {
+                        progressBar.setVisibility(View.GONE);
+                        boolean bool = dailyEntriesViewModel.getDailyEntryAdapter().getItemCount() == 0;
+                        emptyTextView.setVisibility(bool ? View.VISIBLE : View.GONE);
                     }
                 });
     }
 
-    private void onViewEntryClick(DocumentSnapshot documentSnapshot, int position) {
+    private void viewEntry(DocumentSnapshot documentSnapshot, int position) {
         dailyEntriesViewModel.getPosition().setValue(position);
         Bundle bundle = new Bundle();
         bundle.putString("action", "view");

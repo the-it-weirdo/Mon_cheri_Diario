@@ -55,4 +55,10 @@
     <string name="choose_date">Choose Date</string>
     <string name="choose_time">Choose Time</string>
 
+
+    <!--Empty messages-->
+    <string name="empty_remaining_tasks">Hooray!! No Remaining Tasks. &#128515;</string>
+    <string name="empty_completed_task">No completed tasks yet. &#128533;</string>
+    <string name="empty_daily_entry">No Daily entries yet!! &#128533;</string>
+    <string name="empty_categories">No categories found. &#128533;</string>
 </resources>

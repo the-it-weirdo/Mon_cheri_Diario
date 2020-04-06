@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentSnapshot;
 
 public class CategoryAdapter extends FirestoreRecyclerAdapter<Category, CategoryAdapter.CategoryHolder> {
@@ -40,6 +41,12 @@ public class CategoryAdapter extends FirestoreRecyclerAdapter<Category, Category
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.category_list_item,
                 parent, false);
         return new CategoryHolder(v);
+    }
+
+    @Override
+    public void onDataChanged() {
+        super.onDataChanged();
+        listener.OnDataChanged();
     }
 
     class CategoryHolder extends RecyclerView.ViewHolder implements View.OnClickListener,
@@ -113,6 +120,8 @@ public class CategoryAdapter extends FirestoreRecyclerAdapter<Category, Category
         void OnUpdateClick(DocumentSnapshot documentSnapshot, int position);
 
         void OnDeleteClick(DocumentSnapshot documentSnapshot, int position);
+
+        void OnDataChanged();
     }
 
     public void setOnItemClickListener(OnItemClickListener listener) {

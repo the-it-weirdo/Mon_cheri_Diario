@@ -46,6 +46,12 @@ public class TaskAdapter extends FirestoreRecyclerAdapter<Task, TaskAdapter.Task
         return new TaskHolder(v);
     }
 
+    @Override
+    public void onDataChanged() {
+        super.onDataChanged();
+        listener.onDataChanged();
+    }
+
     class TaskHolder extends RecyclerView.ViewHolder implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
         CheckBox checkBox;
@@ -84,5 +90,6 @@ public class TaskAdapter extends FirestoreRecyclerAdapter<Task, TaskAdapter.Task
     public interface OnTaskItemInteractionListener {
         void onDeleteClick(DocumentSnapshot documentSnapshot, int position);
         void onCheckedChange(DocumentSnapshot documentSnapshot, int position, boolean isChecked);
+        void onDataChanged();
     }
 }

@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -33,6 +34,7 @@ public class ViewRemainingTasksFragment extends Fragment {
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
     private FloatingActionButton fabAddTask;
+    private TextView emptyTextView;
 
     private ViewTasksViewModel viewTasksViewModel;
 
@@ -64,6 +66,7 @@ public class ViewRemainingTasksFragment extends Fragment {
         recyclerView = root.findViewById(R.id.recycler_view);
         progressBar = root.findViewById(R.id.progress_bar);
         fabAddTask = root.findViewById(R.id.fab_add_task);
+        emptyTextView = root.findViewById(R.id.empty_text_view);
         return root;
     }
 
@@ -96,11 +99,10 @@ public class ViewRemainingTasksFragment extends Fragment {
         viewTasksViewModel.getTaskAdapter().stopListening();
     }
 
-    private void setUpRecyclerView(RecyclerView recyclerView, ProgressBar progressBar, TaskAdapter taskAdapter) {
+    private void setUpRecyclerView(RecyclerView recyclerView, final ProgressBar progressBar, TaskAdapter taskAdapter) {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(taskAdapter);
-        progressBar.setVisibility(View.GONE);
 
         taskAdapter.setTaskInteractionListener(new TaskAdapter.OnTaskItemInteractionListener() {
             @Override
@@ -113,6 +115,14 @@ public class ViewRemainingTasksFragment extends Fragment {
                 Task task = documentSnapshot.toObject(Task.class);
                 task.setFinished(isChecked);
                 viewTasksViewModel.getTaskManager().updateTask(documentSnapshot.getReference(), task);
+            }
+
+            @Override
+            public void onDataChanged() {
+                progressBar.setVisibility(View.GONE);
+                boolean bool = viewTasksViewModel.getTaskAdapter().getItemCount() == 0;
+                emptyTextView.setText(getResources().getText(R.string.empty_remaining_tasks));
+                emptyTextView.setVisibility(bool ? View.VISIBLE : View.GONE);
             }
         });
     }

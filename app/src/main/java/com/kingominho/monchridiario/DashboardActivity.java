@@ -59,6 +59,7 @@ public class DashboardActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+        fab.setVisibility(View.GONE);
 
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
@@ -82,7 +83,8 @@ public class DashboardActivity extends AppCompatActivity {
             public void onDestinationChanged(@NonNull NavController controller, @NonNull NavDestination destination,
                                              @Nullable Bundle arguments) {
                 if (destination.getId() == R.id.nav_home) {
-                    fab.setVisibility(View.VISIBLE);
+                    fab.setVisibility(View.GONE);
+                    //fab.setVisibility(View.VISIBLE);
                 } else {
                     fab.setVisibility(View.GONE);
                 }

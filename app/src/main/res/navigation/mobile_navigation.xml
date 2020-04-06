@@ -99,7 +99,7 @@
     <fragment
         android:id="@+id/addTask"
         android:name="com.kingominho.monchridiario.AddTask"
-        android:label="fragment_add_task"
+        android:label="@string/navigation_add_task"
         tools:layout="@layout/fragment_add_task">
         <argument
             android:name="category_name"

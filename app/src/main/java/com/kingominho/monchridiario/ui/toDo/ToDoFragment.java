@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -28,6 +29,7 @@ public class ToDoFragment extends Fragment {
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
     private FloatingActionButton fabAddTask;
+    private TextView emptyTextView;
 
     private ToDoViewModel toDoViewModel;
 
@@ -38,6 +40,7 @@ public class ToDoFragment extends Fragment {
         recyclerView = root.findViewById(R.id.recycler_view);
         progressBar = root.findViewById(R.id.progress_circle);
         fabAddTask = root.findViewById(R.id.fab_add_task);
+        emptyTextView = root.findViewById(R.id.empty_text_view);
 
         toDoViewModel = ViewModelProviders.of(this).get(ToDoViewModel.class);
         toDoViewModel.categoryCardAdapter.startListening();
@@ -78,7 +81,6 @@ public class ToDoFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
         recyclerView.setAdapter(toDoViewModel.categoryCardAdapter);
-        progressBar.setVisibility(View.GONE);
 
         Log.d(TAG, "setUpRecyclerView: " + toDoViewModel.categoryCardAdapter.getItemCount());
 
@@ -87,16 +89,22 @@ public class ToDoFragment extends Fragment {
             public void OnItemClick(DocumentSnapshot documentSnapshot, int position) {
                 Category category = documentSnapshot.toObject(Category.class);
                 String id = documentSnapshot.getId();
-                String path = documentSnapshot.getReference().getPath();
-                documentSnapshot.getReference();
-                Toast.makeText(getContext(), "Position: " + position + " ID: " + id + " clicked." +
-                                " path= " + path, Toast.LENGTH_SHORT).show();
+                //String path = documentSnapshot.getReference().getPath();
+                //documentSnapshot.getReference();
+                //Toast.makeText(getContext(), "Position: " + position + " ID: " + id + " clicked." + " path= " + path, Toast.LENGTH_SHORT).show();
 
                 Bundle bundle = new Bundle();
                 bundle.putString("category_id", id);
                 bundle.putString(Category.KEY_CATEGORY_NAME, category.getCategoryName());
                 //Navigation.findNavController(getView()).navigate(R.id.viewCategory, bundle);
                 Navigation.findNavController(getView()).navigate(R.id.viewRemainingTasksFragment, bundle);
+            }
+
+            @Override
+            public void onDataChanged() {
+                progressBar.setVisibility(View.GONE);
+                boolean bool = toDoViewModel.categoryCardAdapter.getItemCount() == 0;
+                emptyTextView.setVisibility(bool ? View.VISIBLE : View.GONE);
             }
         });
     }

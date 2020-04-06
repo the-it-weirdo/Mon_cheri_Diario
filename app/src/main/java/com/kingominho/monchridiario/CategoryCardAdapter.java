@@ -63,6 +63,11 @@ public class CategoryCardAdapter extends FirestoreRecyclerAdapter<Category, Cate
         return new CategoryCardHolder(v);
     }
 
+    @Override
+    public void onDataChanged() {
+        super.onDataChanged();
+        listener.onDataChanged();
+    }
 
     class CategoryCardHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
@@ -94,5 +99,7 @@ public class CategoryCardAdapter extends FirestoreRecyclerAdapter<Category, Cate
 
     public interface OnItemClickListener {
         void OnItemClick(DocumentSnapshot documentSnapshot, int position);
+
+        void onDataChanged();
     }
 }

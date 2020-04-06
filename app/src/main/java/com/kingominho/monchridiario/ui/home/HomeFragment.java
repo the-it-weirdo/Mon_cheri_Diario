@@ -35,6 +35,8 @@ public class HomeFragment extends Fragment {
     private TextView textViewWelcome;
     private RecyclerView recyclerViewTasks;
     private RecyclerView recyclerViewDailyEntries;
+    private TextView emptyTextViewDE;
+    private  TextView emptyTextViewTask;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -46,6 +48,8 @@ public class HomeFragment extends Fragment {
         textViewWelcome = root.findViewById(R.id.welcome_text_view);
         recyclerViewTasks = root.findViewById(R.id.recycler_view_tasks);
         recyclerViewDailyEntries = root.findViewById(R.id.recycler_view_daily_entry);
+        emptyTextViewDE = root.findViewById(R.id.empty_text_view_de);
+        emptyTextViewTask = root.findViewById(R.id.empty_text_view_task);
         return root;
     }
 
@@ -113,13 +117,46 @@ public class HomeFragment extends Fragment {
         homeViewModel.getDailyEntryAdapter().setOnClickListener(new DailyEntryAdapter.OnClickListener() {
             @Override
             public void OnClick(DocumentSnapshot documentSnapshot, int position) {
-                Bundle bundle = new Bundle();
-                bundle.putString("action", "view");
-                bundle.putString("id", documentSnapshot.getId());
-                bundle.putParcelable("DailyEntry", documentSnapshot.toObject(DailyEntry.class));
-                Navigation.findNavController(getView()).navigate(R.id.addUpdateViewDailyEntry, bundle);
+                viewEntry(documentSnapshot, position);
+            }
+
+            @Override
+            public void onDataChanged() {
+                boolean bool = homeViewModel.getDailyEntryAdapter().getItemCount() == 0;
+                emptyTextViewDE.setVisibility(bool ? View.VISIBLE : View.GONE);
+                emptyTextViewDE.setText(getResources().getText(R.string.empty_daily_entry));
             }
         });
+
+        homeViewModel.getDailyEntryAdapter().setOnContextMenuItemClickListener(new DailyEntryAdapter.OnContextMenuItemClickListener() {
+            @Override
+            public void onViewEntryClick(DocumentSnapshot documentSnapshot, int position) {
+                viewEntry(documentSnapshot, position);
+            }
+
+            @Override
+            public void onUpdateEntryClick(DocumentSnapshot documentSnapshot, int position) {
+                DailyEntry dailyEntry = documentSnapshot.toObject(DailyEntry.class);
+                dailyEntry.setDaily_entry_id(documentSnapshot.getId());
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("DailyEntry", dailyEntry);
+                bundle.putString("action", "update");
+                Navigation.findNavController(getView()).navigate(R.id.addUpdateViewDailyEntry, bundle);
+            }
+
+            @Override
+            public void onDeleteEntryClick(DocumentSnapshot documentSnapshot, int position) {
+                homeViewModel.getDailyEntryManager().deleteDailyEntry(documentSnapshot.getReference());
+            }
+        });
+    }
+
+    private void viewEntry(DocumentSnapshot documentSnapshot, int position) {
+        Bundle bundle = new Bundle();
+        bundle.putString("action", "view");
+        bundle.putString("id", documentSnapshot.getId());
+        bundle.putParcelable("DailyEntry", documentSnapshot.toObject(DailyEntry.class));
+        Navigation.findNavController(getView()).navigate(R.id.addUpdateViewDailyEntry, bundle);
     }
 
     void setTaskRecycler() {
@@ -139,6 +176,13 @@ public class HomeFragment extends Fragment {
                 Task task = documentSnapshot.toObject(Task.class);
                 task.setFinished(isChecked);
                 homeViewModel.getTaskManager().updateTask(documentSnapshot.getReference(), task);
+            }
+
+            @Override
+            public void onDataChanged() {
+                boolean bool = homeViewModel.getTaskAdapter().getItemCount() == 0;
+                emptyTextViewTask.setVisibility(bool? View.VISIBLE: View.GONE);
+                emptyTextViewTask.setText(getResources().getText(R.string.empty_remaining_tasks));
             }
         });
     }

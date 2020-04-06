@@ -21,13 +21,19 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 
+import android.widget.TextView;
 import android.widget.Toast;
 
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class ManageCategoryFragment extends Fragment {
     private final static String TAG = "ManageCategoryFragment";
@@ -39,6 +45,7 @@ public class ManageCategoryFragment extends Fragment {
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
     private FloatingActionButton fabAddCategory;
+    private TextView emptyTextView;
 
     //TODO: StringBuilder not sending messages.
 
@@ -51,6 +58,7 @@ public class ManageCategoryFragment extends Fragment {
         recyclerView = root.findViewById(R.id.recycler_view);
         progressBar = root.findViewById(R.id.progress_circle);
         fabAddCategory = root.findViewById(R.id.fab_add_category);
+        emptyTextView = root.findViewById(R.id.empty_text_view);
 
         categoryAdapter = new CategoryAdapter(categoryManager.getAllCategoriesOptions());
         categoryAdapter.startListening();
@@ -92,14 +100,14 @@ public class ManageCategoryFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(categoryAdapter);
-        progressBar.setVisibility(View.GONE);
 
         Log.d(TAG, "setUpRecyclerView: " + categoryAdapter.getItemCount());
 
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
                 ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
             @Override
-            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder,
+                                  @NonNull RecyclerView.ViewHolder target) {
                 return false;
             }
 
@@ -113,10 +121,10 @@ public class ManageCategoryFragment extends Fragment {
             @Override
             public void OnItemClick(DocumentSnapshot documentSnapshot, int position) {
                 Category category = documentSnapshot.toObject(Category.class);
-                String id = documentSnapshot.getId();
-                String path = documentSnapshot.getReference().getPath();
-                documentSnapshot.getReference();
-                Toast.makeText(getContext(), "Position: " + position + " ID: " + id + " clicked.",
+                //String id = documentSnapshot.getId();
+                //String path = documentSnapshot.getReference().getPath();
+                //documentSnapshot.getReference();
+                Toast.makeText(getContext(), category.getCategoryName() + "clicked.",
                         Toast.LENGTH_SHORT).show();
             }
 
@@ -132,6 +140,13 @@ public class ManageCategoryFragment extends Fragment {
                 //categoryAdapter.deleteItem(position);
                 TaskManager.getInstance().deleteAllTask(documentSnapshot.getId());
                 categoryManager.deleteCategory(documentSnapshot.getReference());
+            }
+
+            @Override
+            public void OnDataChanged() {
+                progressBar.setVisibility(View.GONE);
+                boolean bool = categoryAdapter.getItemCount() == 0;
+                emptyTextView.setVisibility(bool ? View.VISIBLE : View.GONE);
             }
         });
     }

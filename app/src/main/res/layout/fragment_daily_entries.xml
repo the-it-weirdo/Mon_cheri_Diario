@@ -17,6 +17,15 @@
         android:layout_height="match_parent"
         tools:listitem="@layout/daily_entry_card_layout"/>
 
+    <TextView
+        android:id="@+id/empty_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="30dp"
+        android:text="@string/empty_daily_entry"
+        android:gravity="top"
+        android:textAlignment="center" />
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_add_daily_entry"
         android:layout_width="wrap_content"

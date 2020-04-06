@@ -45,6 +45,12 @@ public class DailyEntryAdapter extends FirestoreRecyclerAdapter<DailyEntry, Dail
         return new DailyEntryHolder(v);
     }
 
+    @Override
+    public void onDataChanged() {
+        super.onDataChanged();
+        onClickListener.onDataChanged();
+    }
+
     class DailyEntryHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener,
             MenuItem.OnMenuItemClickListener, View.OnClickListener {
 
@@ -124,5 +130,6 @@ public class DailyEntryAdapter extends FirestoreRecyclerAdapter<DailyEntry, Dail
 
     public interface OnClickListener {
         void OnClick(DocumentSnapshot documentSnapshot, int position);
+        void onDataChanged();
     }
 }
