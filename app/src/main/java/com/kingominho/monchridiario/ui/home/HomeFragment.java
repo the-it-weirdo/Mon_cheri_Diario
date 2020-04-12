@@ -1,11 +1,12 @@
 package com.kingominho.monchridiario.ui.home;
 
+import android.graphics.Canvas;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -14,17 +15,18 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.kingominho.monchridiario.DailyEntry;
-import com.kingominho.monchridiario.DailyEntryAdapter;
+import com.kingominho.monchridiario.models.DailyEntry;
+import com.kingominho.monchridiario.adapters.DailyEntryAdapter;
 import com.kingominho.monchridiario.R;
-import com.kingominho.monchridiario.Task;
-import com.kingominho.monchridiario.TaskAdapter;
+import com.kingominho.monchridiario.models.Task;
+import com.kingominho.monchridiario.adapters.TaskAdapter;
 
 public class HomeFragment extends Fragment {
 
@@ -36,7 +38,8 @@ public class HomeFragment extends Fragment {
     private RecyclerView recyclerViewTasks;
     private RecyclerView recyclerViewDailyEntries;
     private TextView emptyTextViewDE;
-    private  TextView emptyTextViewTask;
+    private TextView emptyTextViewTask;
+    private ProgressBar progressBarDE, progressBarTask;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -50,6 +53,8 @@ public class HomeFragment extends Fragment {
         recyclerViewDailyEntries = root.findViewById(R.id.recycler_view_daily_entry);
         emptyTextViewDE = root.findViewById(R.id.empty_text_view_de);
         emptyTextViewTask = root.findViewById(R.id.empty_text_view_task);
+        progressBarDE = root.findViewById(R.id.progress_bar_de);
+        progressBarTask = root.findViewById(R.id.progress_bar_task);
         return root;
     }
 
@@ -74,10 +79,20 @@ public class HomeFragment extends Fragment {
         textViewWelcome.setText(s);
         setDailyEntryRecycler();
         setTaskRecycler();
+
+        homeViewModel.getIsTaskListEmpty().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                progressBarTask.setVisibility(View.GONE);
+                emptyTextViewTask.setVisibility(homeViewModel.getIsTaskListEmpty().getValue() ? View.VISIBLE : View.GONE);
+                emptyTextViewTask.setText(getResources().getText(R.string.empty_remaining_tasks));
+            }
+        });
     }
 
     void setDailyEntryRecycler() {
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(),
+                LinearLayoutManager.HORIZONTAL, false);
         recyclerViewDailyEntries.setLayoutManager(linearLayoutManager);
         LinearSnapHelper linearSnapHelper = new LinearSnapHelper() {
             @Override
@@ -122,6 +137,7 @@ public class HomeFragment extends Fragment {
 
             @Override
             public void onDataChanged() {
+                progressBarDE.setVisibility(View.GONE);
                 boolean bool = homeViewModel.getDailyEntryAdapter().getItemCount() == 0;
                 emptyTextViewDE.setVisibility(bool ? View.VISIBLE : View.GONE);
                 emptyTextViewDE.setText(getResources().getText(R.string.empty_daily_entry));
@@ -163,27 +179,8 @@ public class HomeFragment extends Fragment {
         recyclerViewTasks.setHasFixedSize(true);
         recyclerViewTasks.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerViewTasks.setAdapter(homeViewModel.getTaskAdapter());
-        //progressBar.setVisibility(View.GONE);
-
-        homeViewModel.getTaskAdapter().setTaskInteractionListener(new TaskAdapter.OnTaskItemInteractionListener() {
-            @Override
-            public void onDeleteClick(DocumentSnapshot documentSnapshot, int position) {
-                homeViewModel.getTaskManager().deleteTask(documentSnapshot.getReference());
-            }
-
-            @Override
-            public void onCheckedChange(DocumentSnapshot documentSnapshot, int position, boolean isChecked) {
-                Task task = documentSnapshot.toObject(Task.class);
-                task.setFinished(isChecked);
-                homeViewModel.getTaskManager().updateTask(documentSnapshot.getReference(), task);
-            }
-
-            @Override
-            public void onDataChanged() {
-                boolean bool = homeViewModel.getTaskAdapter().getItemCount() == 0;
-                emptyTextViewTask.setVisibility(bool? View.VISIBLE: View.GONE);
-                emptyTextViewTask.setText(getResources().getText(R.string.empty_remaining_tasks));
-            }
-        });
+        /*DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerViewTasks.getContext(),
+                recyclerViewTasks.getLayoutManager().);
+        recyclerView.addItemDecoration(dividerItemDecoration);*/
     }
 }

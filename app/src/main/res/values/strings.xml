@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Mon chéri Diario</string>
+    <string name="app_name">Mon Chéri Diario</string>
     <string name="title_activity_dashboard">Dashboard Activity</string>
 
     <!--General-->
@@ -37,7 +37,7 @@
     <string name="navigation_manage_categories">Manage Categories</string>
     <string name="navigation_change_password">Change Password</string>
     <string name="navigation_choose_profile_picture">Change Profile Picture</string>
-    <string name="navigation_add_daily_entry">Add Daily Entry</string>
+    <string name="navigation_manage_daily_entry">Your Daily Entry</string>
     <string name="navigation_add_task">Add Task</string>
     <string name="navigation_view_remaining_task">Remaining Tasks</string>
     <string name="navigation_view_completed_task">Completed Tasks</string>

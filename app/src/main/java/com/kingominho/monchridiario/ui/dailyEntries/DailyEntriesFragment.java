@@ -11,7 +11,6 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -20,9 +19,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.kingominho.monchridiario.DailyEntry;
-import com.kingominho.monchridiario.DailyEntryAdapter;
-import com.kingominho.monchridiario.DailyEntryManager;
+import com.kingominho.monchridiario.models.DailyEntry;
+import com.kingominho.monchridiario.adapters.DailyEntryAdapter;
 import com.kingominho.monchridiario.R;
 
 public class DailyEntriesFragment extends Fragment {

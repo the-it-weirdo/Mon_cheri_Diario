@@ -5,15 +5,14 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.kingominho.monchridiario.DailyEntry;
-import com.kingominho.monchridiario.DailyEntryAdapter;
-import com.kingominho.monchridiario.DailyEntryManager;
-import com.kingominho.monchridiario.TaskAdapter;
-import com.kingominho.monchridiario.TaskManager;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.kingominho.monchridiario.adapters.DailyEntryAdapter;
+import com.kingominho.monchridiario.adapters.TaskAdapter;
+import com.kingominho.monchridiario.manager.DailyEntryManager;
+import com.kingominho.monchridiario.manager.TaskManager;
+import com.kingominho.monchridiario.models.Task;
 
 public class HomeViewModel extends ViewModel {
-
-    private MutableLiveData<String> mText;
 
 
     private DailyEntryManager dailyEntryManager;
@@ -22,51 +21,57 @@ public class HomeViewModel extends ViewModel {
     private TaskManager taskManager;
     private TaskAdapter taskAdapter;
 
-    public HomeViewModel() {
-        //    mText = new MutableLiveData<>();
-        //  mText.setValue("This is home fragment");
+    private MutableLiveData<Boolean> isTaskListEmpty;
 
+    public HomeViewModel() {
+        isTaskListEmpty = new MutableLiveData<>();
+        isTaskListEmpty.setValue(true);
         dailyEntryManager = DailyEntryManager.getInstance();
         dailyEntryAdapter = new DailyEntryAdapter(dailyEntryManager.getAllDailyEntriesOptions(
                 FirebaseAuth.getInstance().getCurrentUser().getUid()));
         taskManager = TaskManager.getInstance();
         taskAdapter = new TaskAdapter(taskManager.getAllTaskOfUserOptions(
                 FirebaseAuth.getInstance().getCurrentUser().getUid(), false));
+
+        taskAdapter.setTaskInteractionListener(new TaskAdapter.OnTaskItemInteractionListener() {
+            @Override
+            public void onDeleteClick(DocumentSnapshot documentSnapshot, int position) {
+                taskManager.deleteTask(documentSnapshot.getReference());
+            }
+
+            @Override
+            public void onCheckedChange(DocumentSnapshot documentSnapshot, int position, boolean isChecked) {
+                Task task = documentSnapshot.toObject(Task.class);
+                task.setFinished(isChecked);
+                taskManager.updateTask(documentSnapshot.getReference(), task);
+            }
+
+            @Override
+            public void onDataChanged() {
+                isTaskListEmpty.setValue(taskAdapter.getItemCount() == 0);
+            }
+        });
     }
 
-    public LiveData<String> getText() {
-        return mText;
+    public LiveData<Boolean> getIsTaskListEmpty() {
+        return isTaskListEmpty;
     }
 
     public DailyEntryManager getDailyEntryManager() {
         return dailyEntryManager;
     }
 
-    public void setDailyEntryManager(DailyEntryManager dailyEntryManager) {
-        this.dailyEntryManager = dailyEntryManager;
-    }
 
     public DailyEntryAdapter getDailyEntryAdapter() {
         return dailyEntryAdapter;
-    }
-
-    public void setDailyEntryAdapter(DailyEntryAdapter dailyEntryAdapter) {
-        this.dailyEntryAdapter = dailyEntryAdapter;
     }
 
     public TaskManager getTaskManager() {
         return taskManager;
     }
 
-    public void setTaskManager(TaskManager taskManager) {
-        this.taskManager = taskManager;
-    }
-
     public TaskAdapter getTaskAdapter() {
         return taskAdapter;
     }
 
-    public void setTaskAdapter(TaskAdapter taskAdapter) {
-        this.taskAdapter = taskAdapter;
-    }
 }

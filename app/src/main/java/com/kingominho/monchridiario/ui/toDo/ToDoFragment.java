@@ -18,9 +18,10 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.kingominho.monchridiario.Category;
-import com.kingominho.monchridiario.CategoryCardAdapter;
+import com.kingominho.monchridiario.models.Category;
+import com.kingominho.monchridiario.adapters.CategoryCardAdapter;
 import com.kingominho.monchridiario.R;
 
 public class ToDoFragment extends Fragment {
@@ -31,6 +32,8 @@ public class ToDoFragment extends Fragment {
     private FloatingActionButton fabAddTask;
     private TextView emptyTextView;
 
+    private boolean isEmptyCategory;
+
     private ToDoViewModel toDoViewModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -40,6 +43,7 @@ public class ToDoFragment extends Fragment {
         recyclerView = root.findViewById(R.id.recycler_view);
         progressBar = root.findViewById(R.id.progress_circle);
         fabAddTask = root.findViewById(R.id.fab_add_task);
+        fabAddTask.setEnabled(false);
         emptyTextView = root.findViewById(R.id.empty_text_view);
 
         toDoViewModel = ViewModelProviders.of(this).get(ToDoViewModel.class);
@@ -65,7 +69,13 @@ public class ToDoFragment extends Fragment {
         fabAddTask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Navigation.findNavController(v).navigate(R.id.addTask);
+                if (isEmptyCategory) {
+                    Toast.makeText(getActivity(), "Make some categories first!!\n" +
+                            "Click the add button in Manage Category section." ,Toast.LENGTH_SHORT).show();
+                    Navigation.findNavController(v).navigate(R.id.manageCategory);
+                } else {
+                    Navigation.findNavController(v).navigate(R.id.addTask);
+                }
             }
         });
     }
@@ -103,8 +113,9 @@ public class ToDoFragment extends Fragment {
             @Override
             public void onDataChanged() {
                 progressBar.setVisibility(View.GONE);
-                boolean bool = toDoViewModel.categoryCardAdapter.getItemCount() == 0;
-                emptyTextView.setVisibility(bool ? View.VISIBLE : View.GONE);
+                fabAddTask.setEnabled(true);
+                isEmptyCategory = toDoViewModel.categoryCardAdapter.getItemCount() == 0;
+                emptyTextView.setVisibility(isEmptyCategory ? View.VISIBLE : View.GONE);
             }
         });
     }

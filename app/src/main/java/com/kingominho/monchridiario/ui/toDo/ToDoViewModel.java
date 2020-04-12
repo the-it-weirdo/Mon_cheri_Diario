@@ -4,8 +4,8 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.kingominho.monchridiario.CategoryCardAdapter;
-import com.kingominho.monchridiario.CategoryManager;
+import com.kingominho.monchridiario.adapters.CategoryCardAdapter;
+import com.kingominho.monchridiario.manager.CategoryManager;
 
 public class ToDoViewModel extends ViewModel {
 

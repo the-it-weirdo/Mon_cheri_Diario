@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/daily_entry_bg"
+    android:background="@drawable/background"
     android:orientation="vertical"
-    tools:context=".AddUpdateViewDailyEntry">
+    tools:context=".ui.dailyEntries.AddUpdateViewDailyEntry">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -73,7 +73,7 @@
         android:fitsSystemWindows="true"
         android:layout_margin="7dp"
         android:hint="My dear Diary..."
-        android:paddingBottom="5dp"
+        android:layout_marginBottom="5dp"
         app:hintAnimationEnabled="true">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -82,7 +82,10 @@
             android:layout_height="wrap_content"
             android:gravity="top"
             android:inputType="textMultiLine"
-            android:padding="5dp" />
+            android:textColor="@android:color/black"
+            android:paddingTop="5dp"
+            android:paddingEnd="5dp"
+            android:paddingStart="5dp"/>
 
         <TextView
             android:id="@+id/textview_view_entry"
@@ -90,6 +93,7 @@
             android:layout_height="wrap_content"
             android:scrollbars="vertical"
             android:gravity="top"
+            android:textColor="@android:color/black"
             android:padding="5dp" />
 
     </com.google.android.material.textfield.TextInputLayout>

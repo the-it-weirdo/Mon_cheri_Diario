@@ -74,23 +74,23 @@
         tools:layout="@layout/fragment_send" />
     <fragment
         android:id="@+id/manageCategory"
-        android:name="com.kingominho.monchridiario.ManageCategoryFragment"
+        android:name="com.kingominho.monchridiario.ui.manageCategory.ManageCategoryFragment"
         android:label="@string/navigation_manage_categories"
         tools:layout="@layout/fragment_manage_category" />
     <fragment
         android:id="@+id/changePassword"
-        android:name="com.kingominho.monchridiario.ChangePassword"
+        android:name="com.kingominho.monchridiario.ui.changePassword.ChangePassword"
         android:label="@string/navigation_change_password"
         tools:layout="@layout/fragment_change_password" />
     <activity
         android:id="@+id/chooseProfilePicture"
-        android:name="com.kingominho.monchridiario.ChooseProfilePicture"
+        android:name="com.kingominho.monchridiario.activity.ChooseProfilePicture"
         android:label="@string/navigation_choose_profile_picture"
         tools:layout="@layout/activity_choose_profile_picture" />
     <fragment
         android:id="@+id/addUpdateViewDailyEntry"
-        android:name="com.kingominho.monchridiario.AddUpdateViewDailyEntry"
-        android:label="@string/navigation_add_daily_entry"
+        android:name="com.kingominho.monchridiario.ui.dailyEntries.AddUpdateViewDailyEntry"
+        android:label="@string/navigation_manage_daily_entry"
         tools:layout="@layout/fragment_add_daily_entry">
         <argument
             android:name="action"
@@ -98,7 +98,7 @@
     </fragment>
     <fragment
         android:id="@+id/addTask"
-        android:name="com.kingominho.monchridiario.AddTask"
+        android:name="com.kingominho.monchridiario.ui.addTask.AddTask"
         android:label="@string/navigation_add_task"
         tools:layout="@layout/fragment_add_task">
         <argument
@@ -109,7 +109,7 @@
     </fragment>
     <fragment
         android:id="@+id/viewRemainingTasksFragment"
-        android:name="com.kingominho.monchridiario.ViewRemainingTasksFragment"
+        android:name="com.kingominho.monchridiario.ui.viewTasks.ViewRemainingTasksFragment"
         android:label="@string/navigation_view_remaining_task"
         tools:layout="@layout/fragment_view_task_by_category">
         <argument
@@ -129,7 +129,7 @@
     </fragment>
     <fragment
         android:id="@+id/viewCompletedTasksFragment"
-        android:name="com.kingominho.monchridiario.ViewCompletedTasksFragment"
+        android:name="com.kingominho.monchridiario.ui.viewTasks.ViewCompletedTasksFragment"
         android:label="@string/navigation_view_completed_task"
         tools:layout="@layout/fragment_view_task_by_category">
         <argument

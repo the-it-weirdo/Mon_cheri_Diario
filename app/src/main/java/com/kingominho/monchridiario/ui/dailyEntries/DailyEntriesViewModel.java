@@ -2,14 +2,12 @@ package com.kingominho.monchridiario.ui.dailyEntries;
 
 import android.util.Log;
 
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.kingominho.monchridiario.DailyEntry;
-import com.kingominho.monchridiario.DailyEntryAdapter;
-import com.kingominho.monchridiario.DailyEntryManager;
+import com.kingominho.monchridiario.adapters.DailyEntryAdapter;
+import com.kingominho.monchridiario.manager.DailyEntryManager;
 
 public class DailyEntriesViewModel extends ViewModel {
     private final String TAG = "DailyEntriesViewModel";
