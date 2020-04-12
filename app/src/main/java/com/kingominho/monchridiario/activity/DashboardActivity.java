@@ -32,6 +32,8 @@ import android.view.Menu;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import jp.wasabeef.picasso.transformations.CropCircleTransformation;
+
 public class DashboardActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
@@ -111,6 +113,7 @@ public class DashboardActivity extends AppCompatActivity {
         Picasso.with(this)
                 .load(currentUser.getPhotoUrl())
                 .placeholder(getDrawable(R.drawable.ic_person_black_24dp))
+                .transform(new CropCircleTransformation())
                 .into(profileImage);
     }
 

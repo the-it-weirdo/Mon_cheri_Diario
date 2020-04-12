@@ -50,14 +50,15 @@ public class AccountManager {
         return mInstance;
     }
 
-    public void setProfilePicture(Uri photoUri) {
+    public void setProfilePicture(byte[] imageData) {
         final FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
         mStorage = FirebaseStorage.getInstance();
         mDatabaseReference = FirebaseDatabase.getInstance().getReference(AccountManager.PROFILE_PHOTO_UPLOAD_PATH);
         final StorageReference fileReference = mStorage.getReference(AccountManager.PROFILE_PHOTO_UPLOAD_PATH)
                 .child(mUser.getUid());
 
-        fileReference.putFile(photoUri)
+
+        fileReference.putBytes(imageData)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -138,7 +139,7 @@ public class AccountManager {
 
     public void updateProfilePicture(String oldURL, Uri newUri) {
         deleteProfilePicture(oldURL);
-        setProfilePicture(newUri);
+        //setProfilePicture(newUri);
     }
 
     public void changePassword(String currentPassword, final String newPassword) {

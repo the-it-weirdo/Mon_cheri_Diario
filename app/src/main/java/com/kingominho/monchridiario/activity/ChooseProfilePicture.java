@@ -2,11 +2,14 @@ package com.kingominho.monchridiario.activity;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.webkit.MimeTypeMap;
@@ -25,6 +28,11 @@ import com.google.firebase.storage.StorageReference;
 import com.kingominho.monchridiario.R;
 import com.kingominho.monchridiario.manager.AccountManager;
 import com.squareup.picasso.Picasso;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
+import jp.wasabeef.picasso.transformations.CropCircleTransformation;
 
 public class ChooseProfilePicture extends AppCompatActivity implements AccountManager.AccountManagerTaskListener {
 
@@ -101,9 +109,22 @@ public class ChooseProfilePicture extends AppCompatActivity implements AccountMa
     private void uploadFile() {
         if (mImageUri != null) {
             updateUI(false);
+
+            //compressing file
+            Bitmap bmp = null;
+            try {
+                bmp = MediaStore.Images.Media.getBitmap(getContentResolver(), mImageUri);
+            } catch (IOException e) {
+                e.printStackTrace();
+                Log.e(TAG, "uploadFile: Image URI not found.", e);
+            }
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bmp.compress(Bitmap.CompressFormat.JPEG, 25, baos);
+            byte[] data = baos.toByteArray();
+
             AccountManager accountManager = AccountManager.getInstance();
             accountManager.setAccountManagerTaskListener(this);
-            accountManager.setProfilePicture(mImageUri);
+            accountManager.setProfilePicture(data);
         } else {
             Toast.makeText(this, "No file selected!!", Toast.LENGTH_SHORT).show();
         }
@@ -116,7 +137,10 @@ public class ChooseProfilePicture extends AppCompatActivity implements AccountMa
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
                 && data != null && data.getData() != null) {
             mImageUri = data.getData();
-            Picasso.with(this).load(mImageUri).into(mImageView);
+            Picasso.with(this)
+                    .load(mImageUri)
+                    .transform(new CropCircleTransformation())
+                    .into(mImageView);
         }
     }
 

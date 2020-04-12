@@ -26,9 +26,6 @@ import com.kingominho.monchridiario.manager.DailyEntryManager;
 import com.kingominho.monchridiario.models.DailyEntry;
 
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class AddUpdateViewDailyEntry extends Fragment {
     private final static String TAG = "AddDailyFragment: ";
 

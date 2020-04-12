@@ -30,6 +30,8 @@ import com.kingominho.monchridiario.R;
 import com.kingominho.monchridiario.manager.InputValidationUtil;
 import com.squareup.picasso.Picasso;
 
+import jp.wasabeef.picasso.transformations.CropCircleTransformation;
+
 public class ToolsFragment extends Fragment {
 
     private final int PICK_IMAGE_REQUEST = 1;
@@ -68,6 +70,7 @@ public class ToolsFragment extends Fragment {
         Picasso.with(getContext())
                 .load(toolsViewModel.getmProfilePicUrl())
                 .placeholder(view.getResources().getDrawable(R.drawable.ic_person_black_24dp))
+                .transform(new CropCircleTransformation())
                 .into(profilePictureImageView);
 
 
