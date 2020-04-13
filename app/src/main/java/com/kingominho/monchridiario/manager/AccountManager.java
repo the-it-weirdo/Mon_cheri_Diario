@@ -10,6 +10,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
@@ -19,10 +20,20 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.WriteBatch;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.kingominho.monchridiario.models.Category;
+import com.kingominho.monchridiario.models.DailyEntry;
 import com.kingominho.monchridiario.models.ProfilePicture;
+
+import java.util.List;
 
 public class AccountManager {
 
@@ -188,29 +199,99 @@ public class AccountManager {
         this.accountManagerTaskListener = accountManagerTaskListener;
     }
 
-    //TODO: Make this a transaction
-    public void deleteAccount(FirebaseUser user) {
-        final String uid = user.getUid();
-        final String url = user.getPhotoUrl().toString();
-
-        CategoryManager.getInstance().deleteAllCategories(uid);
-        DailyEntryManager.getInstance().deleteAllDailyEntry(uid);
-        deleteProfilePicture(url);
-
+    private void deleteAccount() {
         FirebaseAuth.getInstance().getCurrentUser().delete().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                if(task.isSuccessful()) {
-                    Log.d(TAG, "onComplete: Task successful. Account deleted.");
-                }
-                else {
-                    Log.e(TAG, "onComplete: Task failed.", task.getException());
-                    if(FirebaseAuth.getInstance().getCurrentUser()!=null) {
+                if (task.isSuccessful()) {
+                    Log.d(TAG, "deleteAccount onComplete: Task successful. Account deleted.");
+                    accountManagerTaskListener.OnTaskSuccessful(task, TASK_ID_DELETE_ACCOUNT);
+                } else {
+                    accountManagerTaskListener.OnTaskNotSuccessful(task, TASK_ID_DELETE_ACCOUNT);
+                    Log.e(TAG, "deleteAccount onComplete: Task failed.", task.getException());
+                    if (FirebaseAuth.getInstance().getCurrentUser() != null) {
                         FirebaseAuth.getInstance().signOut();
                     }
                 }
             }
         });
+    }
+
+    public void deleteAccount(final FirebaseUser user) {
+        if (user == null) {
+            Log.e(TAG, "deleteAccount: User is null.", new Exception("UserNullException"));
+            return;
+        }
+        mStorage = FirebaseStorage.getInstance();
+        mDatabaseReference = FirebaseDatabase.getInstance().getReference(AccountManager.PROFILE_PHOTO_UPLOAD_PATH);
+        final StorageReference profilePicStorageRef = mStorage.getReferenceFromUrl(user.getPhotoUrl().toString());
+        final CollectionReference categoryCollectionRef = CategoryManager.getInstance().categoryCollectionRef;
+        final CollectionReference taskCollectionReference = TaskManager.getInstance().taskCollectionRef;
+        final CollectionReference dailyEntryCollectionReference = DailyEntryManager.getInstance().dailyEntryCollectionRef;
+
+        final WriteBatch writeBatch = FirebaseFirestore.getInstance().batch();
+
+        final Task<QuerySnapshot> deleteCategories = categoryCollectionRef.whereEqualTo(Category.KEY_USER_ID, user.getUid()).get();
+        final Task<QuerySnapshot> deleteTasks = taskCollectionReference.whereEqualTo(com.kingominho.monchridiario.models.Task.KEY_USER_ID,
+                user.getUid()).get();
+        final Task<QuerySnapshot> deleteDailyEntries = dailyEntryCollectionReference.whereEqualTo(DailyEntry.USER_ID_KEY,
+                user.getUid()).get();
+
+        Tasks.whenAllComplete(deleteCategories, deleteTasks, deleteDailyEntries)
+                .addOnSuccessListener(new OnSuccessListener<List<Task<?>>>() {
+                    @Override
+                    public void onSuccess(List<Task<?>> tasks) {
+                        Log.d(TAG, "deleteAccount onSuccess: Categories, Tasks and Daily Entries collected.");
+                        for (DocumentSnapshot documentSnapshot : deleteCategories.getResult().getDocuments()) {
+                            writeBatch.delete(documentSnapshot.getReference());
+                        }
+                        for (DocumentSnapshot documentSnapshot : deleteTasks.getResult().getDocuments()) {
+                            writeBatch.delete(documentSnapshot.getReference());
+                        }
+                        for (DocumentSnapshot documentSnapshot: deleteDailyEntries.getResult().getDocuments()) {
+                            writeBatch.delete(documentSnapshot.getReference());
+                        }
+                        writeBatch.commit()
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        Log.d(TAG, "deleteAccount onSuccess: Categories, Tasks and Daily Entries deleted.");
+                                        Task deleteRealTimeDatabaseRef = mDatabaseReference.child(user.getUid()).removeValue();
+                                        Task deleteImageFromStorage = profilePicStorageRef.delete();
+
+                                        Tasks.whenAllComplete(deleteRealTimeDatabaseRef, deleteImageFromStorage)
+                                                .addOnSuccessListener(new OnSuccessListener<List<Task<?>>>() {
+                                                    @Override
+                                                    public void onSuccess(List<Task<?>> tasks) {
+                                                        mInstance.deleteAccount();
+                                                        Log.d(TAG, "deleteAccount onSuccess: RealtimeDatabase and" +
+                                                                "Storage Reference deleted.");
+                                                    }
+                                                })
+                                                .addOnFailureListener(new OnFailureListener() {
+                                                    @Override
+                                                    public void onFailure(@NonNull Exception e) {
+                                                        Log.e(TAG, "deleteAccount onFailure: RealtimeDatabase and " +
+                                                                "Storage reference not deleted.", e);
+                                                    }
+                                                });
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.e(TAG, "deleteAccount onFailure: Categories, Tasks and Daily Entries delete" +
+                                                "failed.", e);
+                                    }
+                                });
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e(TAG, "deleteAccount onFailure: Categories, Tasks and Daily Entries collection failed.", e);
+                    }
+                });
     }
 
     public void reAuthenticateUser(String email, String password) {

@@ -118,13 +118,14 @@ public class ChooseProfilePicture extends AppCompatActivity implements AccountMa
                 e.printStackTrace();
                 Log.e(TAG, "uploadFile: Image URI not found.", e);
             }
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            bmp.compress(Bitmap.CompressFormat.JPEG, 25, baos);
-            byte[] data = baos.toByteArray();
-
-            AccountManager accountManager = AccountManager.getInstance();
-            accountManager.setAccountManagerTaskListener(this);
-            accountManager.setProfilePicture(data);
+            if (bmp != null) {
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                bmp.compress(Bitmap.CompressFormat.JPEG, 15, baos);
+                byte[] data = baos.toByteArray();
+                AccountManager accountManager = AccountManager.getInstance();
+                accountManager.setAccountManagerTaskListener(this);
+                accountManager.setProfilePicture(data);
+            }
         } else {
             Toast.makeText(this, "No file selected!!", Toast.LENGTH_SHORT).show();
         }

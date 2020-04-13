@@ -26,7 +26,7 @@ public class DailyEntryManager {
     private final String DAILY_ENTRY_COLLECTION_PATH = "daily_entry";
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private CollectionReference dailyEntryCollectionRef = db.collection(DAILY_ENTRY_COLLECTION_PATH);
+    public CollectionReference dailyEntryCollectionRef = db.collection(DAILY_ENTRY_COLLECTION_PATH);
 
     private static DailyEntryManager instance;
 

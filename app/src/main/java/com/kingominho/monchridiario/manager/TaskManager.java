@@ -27,7 +27,7 @@ public class TaskManager {
     private final static String TASKS_COLLECTION_PATH = "tasks";
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private CollectionReference taskCollectionRef = db.collection(TASKS_COLLECTION_PATH);
+    public CollectionReference taskCollectionRef = db.collection(TASKS_COLLECTION_PATH);
 
     private static TaskManager taskManagerInstance;
 

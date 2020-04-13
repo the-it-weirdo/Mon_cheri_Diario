@@ -147,10 +147,11 @@ public class ToolsFragment extends Fragment {
             public void OnTaskSuccessful(Task task, int task_id) {
                 switch (task_id) {
                     case AccountManager.TASK_ID_REAUTHENTICATE_USER: {
-                        //accountManager.deleteAccount(FirebaseAuth.getInstance().getCurrentUser());
+                        accountManager.deleteAccount(FirebaseAuth.getInstance().getCurrentUser());
                         break;
                     }
                     case AccountManager.TASK_ID_DELETE_ACCOUNT: {
+                        Log.d(TAG, "deleteAccount OnTaskSuccessful: Account Deleted.");
                         Toast.makeText(getContext(), "User Account and data deleted.", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(getContext(), LoginActivity.class);
                         startActivity(intent);
@@ -253,6 +254,7 @@ public class ToolsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
+                notifyUser(true);
             }
         });
 

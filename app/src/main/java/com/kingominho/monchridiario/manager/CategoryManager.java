@@ -26,7 +26,7 @@ public class CategoryManager {
     private final static String CATEGORY_COLLECTION_PATH = "categories";
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private CollectionReference categoryCollectionRef = db.collection(CATEGORY_COLLECTION_PATH);
+    public CollectionReference categoryCollectionRef = db.collection(CATEGORY_COLLECTION_PATH);
 
     private static CategoryManager mInstance;
 
@@ -50,19 +50,9 @@ public class CategoryManager {
     }
 
     public FirestoreRecyclerOptions<Category> getAllCategoriesOptions() {
-        //Query query = getAllCategories(userId);
-
         Query query = categoryCollectionRef.whereEqualTo(Category.KEY_USER_ID,
                 FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .orderBy(Category.KEY_CATEGORY_NAME);
-
-        /* query.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                Log.d(TAG, "onSuccess: Query Returned: " + queryDocumentSnapshots.size() + " records.");
-            }
-        }); */
-
 
         FirestoreRecyclerOptions<Category> options = new FirestoreRecyclerOptions.Builder<Category>()
                 .setQuery(query, Category.class)
