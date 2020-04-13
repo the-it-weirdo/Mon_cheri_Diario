@@ -12,6 +12,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -46,7 +47,7 @@ public class ToDoFragment extends Fragment {
         fabAddTask.setEnabled(false);
         emptyTextView = root.findViewById(R.id.empty_text_view);
 
-        toDoViewModel = ViewModelProviders.of(this).get(ToDoViewModel.class);
+        toDoViewModel = new ViewModelProvider(this).get(ToDoViewModel.class);
         toDoViewModel.categoryCardAdapter.startListening();
 
         Log.d(TAG, "onCreateView: categoryAdapter started listening.");

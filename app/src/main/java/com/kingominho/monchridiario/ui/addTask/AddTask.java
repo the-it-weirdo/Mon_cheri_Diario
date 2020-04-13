@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 
@@ -80,7 +81,7 @@ public class AddTask extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         setHasOptionsMenu(true);
-        addTaskViewModel = ViewModelProviders.of(this).get(AddTaskViewModel.class);
+        addTaskViewModel = new ViewModelProvider(this).get(AddTaskViewModel.class);
         categoryManager = CategoryManager.getInstance();
         return inflater.inflate(R.layout.fragment_add_task, container, false);
     }

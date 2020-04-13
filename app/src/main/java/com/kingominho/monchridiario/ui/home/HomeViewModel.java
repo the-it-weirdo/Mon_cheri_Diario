@@ -1,11 +1,14 @@
 package com.kingominho.monchridiario.ui.home;
 
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.kingominho.monchridiario.R;
 import com.kingominho.monchridiario.adapters.DailyEntryAdapter;
 import com.kingominho.monchridiario.adapters.TaskAdapter;
 import com.kingominho.monchridiario.manager.DailyEntryManager;
@@ -14,6 +17,7 @@ import com.kingominho.monchridiario.models.Task;
 
 public class HomeViewModel extends ViewModel {
 
+    private static final String TAG = "HomeViewModel";
 
     private DailyEntryManager dailyEntryManager;
     private DailyEntryAdapter dailyEntryAdapter;
@@ -23,9 +27,14 @@ public class HomeViewModel extends ViewModel {
 
     private MutableLiveData<Boolean> isTaskListEmpty;
 
+    private MutableLiveData<Integer> selected;
+
     public HomeViewModel() {
+        Log.d(TAG, "HomeViewModel: constructor called.");
         isTaskListEmpty = new MutableLiveData<>();
         isTaskListEmpty.setValue(true);
+        selected = new MutableLiveData<>();
+        selected.setValue(R.id.show_tasks_button);
         dailyEntryManager = DailyEntryManager.getInstance();
         dailyEntryAdapter = new DailyEntryAdapter(dailyEntryManager.getAllDailyEntriesOptions(
                 FirebaseAuth.getInstance().getCurrentUser().getUid()));
@@ -55,6 +64,14 @@ public class HomeViewModel extends ViewModel {
 
     public LiveData<Boolean> getIsTaskListEmpty() {
         return isTaskListEmpty;
+    }
+
+    public LiveData<Integer> getSelected() {
+        return selected;
+    }
+
+    public void setSelected(Integer integer) {
+        selected.setValue(integer);
     }
 
     public DailyEntryManager getDailyEntryManager() {

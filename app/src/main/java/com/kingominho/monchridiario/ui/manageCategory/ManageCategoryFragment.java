@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -52,7 +53,7 @@ public class ManageCategoryFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
 
         View root = inflater.inflate(R.layout.fragment_manage_category, container, false);
-        manageCategoryViewModel = ViewModelProviders.of(this).get(ManageCategoryViewModel.class);
+        manageCategoryViewModel = new ViewModelProvider(this).get(ManageCategoryViewModel.class);
         recyclerView = root.findViewById(R.id.recycler_view);
         progressBar = root.findViewById(R.id.progress_circle);
         fabAddCategory = root.findViewById(R.id.fab_add_category);

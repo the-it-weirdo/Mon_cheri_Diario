@@ -2,11 +2,12 @@ package com.kingominho.monchridiario.activity;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -83,14 +84,20 @@ public class ChooseProfilePicture extends AppCompatActivity implements AccountMa
         mButtonUpload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*if (mUploadTask != null && mUploadTask.isInProgress()) {
-                    Toast.makeText(ChooseProfilePicture.this, "Upload in Progress!!", Toast.LENGTH_SHORT).show();
-                } else {
+                if (isNetworkConnected()) {
                     uploadFile();
-                }*/
-                uploadFile();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Connect to internet" +
+                            " and try again.", Toast.LENGTH_SHORT).show();
+                }
             }
         });
+    }
+
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
     }
 
     private void openFileChooser() {

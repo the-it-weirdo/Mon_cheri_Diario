@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -48,7 +49,7 @@ public class ViewCompletedTasksFragment extends Fragment {
         setHasOptionsMenu(true);
         category_id = getArguments().getString("category_id");
         Log.d(TAG, "onCreateView: Category Id: " + category_id);
-        viewTasksViewModel = ViewModelProviders.of(this).get(ViewTasksViewModel.class);
+        viewTasksViewModel = new ViewModelProvider(this).get(ViewTasksViewModel.class);
         viewTasksViewModel.setTaskAdapter(category_id, true);
         viewTasksViewModel.getTaskAdapter().startListening();
 

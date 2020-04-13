@@ -1,6 +1,7 @@
 package com.kingominho.monchridiario.ui.dailyEntries;
 
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -16,6 +17,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextClock;
 import android.widget.TextView;
@@ -118,6 +120,11 @@ public class AddUpdateViewDailyEntry extends Fragment {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_save:
+                try {InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);}
+                catch (Exception e) {
+                    Log.e(TAG, "onOptionsItemSelected: Error while trying to hide soft input: ", e);
+                }
                 saveClicked();
                 Toast.makeText(getContext(), "Saving...", Toast.LENGTH_SHORT).show();
                 return true;

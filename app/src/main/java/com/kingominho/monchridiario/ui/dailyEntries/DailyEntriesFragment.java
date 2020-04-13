@@ -11,6 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -40,7 +41,7 @@ public class DailyEntriesFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_daily_entries, container, false);
-        dailyEntriesViewModel = ViewModelProviders.of(this).get(DailyEntriesViewModel.class);
+        dailyEntriesViewModel = new ViewModelProvider(this).get(DailyEntriesViewModel.class);
         fabAddDailyEntry = root.findViewById(R.id.fab_add_daily_entry);
         recyclerView = root.findViewById(R.id.recycler_view);
         progressBar = root.findViewById(R.id.progress_circle);
