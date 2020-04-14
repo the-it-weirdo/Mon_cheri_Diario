@@ -42,6 +42,17 @@ public class HomeFragment extends Fragment {
 
 
     private LinearSnapHelper linearSnapHelper;
+    private LinearLayoutManager taskLinearLayoutManager, deLinearLayoutManager;
+
+
+    public HomeFragment() {
+        //required
+    }
+
+    public static HomeFragment newInstance() {
+        HomeFragment fragment = new HomeFragment();
+        return fragment;
+    }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -52,6 +63,7 @@ public class HomeFragment extends Fragment {
         homeViewModel.getTaskAdapter().startListening();
         textViewWelcome = root.findViewById(R.id.welcome_text_view);
         recyclerView = root.findViewById(R.id.recycler_view_tasks);
+        //recyclerView.setHasFixedSize(true);
         taskButton = root.findViewById(R.id.show_tasks_button);
         dailyEntryButton = root.findViewById(R.id.show_de_button);
         emptyTextView = root.findViewById(R.id.empty_text_view_task);
@@ -61,17 +73,38 @@ public class HomeFragment extends Fragment {
         return root;
     }
 
-    private void setSelected(Button b) {
-        b.setSelected(true);
-        b.setEnabled(false);
-        homeViewModel.setSelected(b.getId());
-    }
-
     @Override
     public void onResume() {
         super.onResume();
         homeViewModel.getDailyEntryAdapter().startListening();
         homeViewModel.getTaskAdapter().startListening();
+
+        //for first load, show task is default.
+        homeViewModel.getSelected().observe(this, new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+                int value = integer;
+                switch (value) {
+                    case R.id.show_tasks_button: {
+                        taskButton.setEnabled(false);
+                        setRecycler(recyclerView, taskLinearLayoutManager);
+                        break;
+                    }
+                    case R.id.show_de_button: {
+                        dailyEntryButton.setEnabled(false);
+                        setRecycler(recyclerView, deLinearLayoutManager);
+                        break;
+                    }
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        recyclerView.setLayoutManager(null);
+        recyclerView.setAdapter(null);
     }
 
     @Override
@@ -82,13 +115,21 @@ public class HomeFragment extends Fragment {
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        taskLinearLayoutManager = null;
+        deLinearLayoutManager = null;
+        linearSnapHelper = null;
+    }
+
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         String s = "Hello, " + FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
         textViewWelcome.setText(s);
 
-        final LinearLayoutManager taskLinearLayoutManager = new LinearLayoutManager(getActivity());
-        final LinearLayoutManager deLinearLayoutManager = new LinearLayoutManager(getActivity(),
+        taskLinearLayoutManager = new LinearLayoutManager(getActivity());
+        deLinearLayoutManager = new LinearLayoutManager(getActivity(),
                 LinearLayoutManager.HORIZONTAL, false);
         linearSnapHelper = new LinearSnapHelper() {
             @Override
@@ -207,26 +248,6 @@ public class HomeFragment extends Fragment {
                 }
             }
         });
-
-        //for first load, show task is default.
-        homeViewModel.getSelected().observe(this, new Observer<Integer>() {
-            @Override
-            public void onChanged(Integer integer) {
-                int value = integer;
-                switch (value) {
-                    case R.id.show_tasks_button: {
-                        taskButton.setEnabled(false);
-                        setRecycler(recyclerView, taskLinearLayoutManager);
-                        break;
-                    }
-                    case R.id.show_de_button: {
-                        dailyEntryButton.setEnabled(false);
-                        setRecycler(recyclerView, deLinearLayoutManager);
-                        break;
-                    }
-                }
-            }
-        });
     }
 
     private void updateUI(boolean bool) {
@@ -247,7 +268,6 @@ public class HomeFragment extends Fragment {
     }
 
     private void setRecycler(RecyclerView recycler, LinearLayoutManager layoutManager) {
-        //recycler.setHasFixedSize(true);
         switch (homeViewModel.getSelected().getValue()) {
             case R.id.show_tasks_button: {
                 dailyEntryButton.setEnabled(true);
@@ -275,5 +295,9 @@ public class HomeFragment extends Fragment {
         Navigation.findNavController(getView()).navigate(R.id.addUpdateViewDailyEntry, bundle);
     }
 
-
+    private void setSelected(Button b) {
+        b.setSelected(true);
+        b.setEnabled(false);
+        homeViewModel.setSelected(b.getId());
+    }
 }

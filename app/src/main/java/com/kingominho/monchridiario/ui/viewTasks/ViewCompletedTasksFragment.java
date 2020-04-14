@@ -66,7 +66,7 @@ public class ViewCompletedTasksFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        setUpRecyclerView(recyclerView, progressBar, viewTasksViewModel.getTaskAdapter());
+        setUpRecyclerView(recyclerView, viewTasksViewModel.getTaskAdapter());
         fabAddTask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -96,8 +96,7 @@ public class ViewCompletedTasksFragment extends Fragment {
         viewTasksViewModel.getTaskAdapter().stopListening();
     }
 
-    private void setUpRecyclerView(RecyclerView recyclerView, final ProgressBar progressBar, TaskAdapter taskAdapter) {
-        recyclerView.setHasFixedSize(true);
+    private void setUpRecyclerView(RecyclerView recyclerView, TaskAdapter taskAdapter) {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(taskAdapter);

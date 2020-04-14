@@ -85,13 +85,16 @@
 
         <Button
             android:id="@+id/button_choose_date"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/spinner_category"
             android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
             android:layout_toEndOf="@id/text_view_fbyd"
+            android:background="@drawable/choose_button_selector"
             android:text="@string/choose_date"
+            android:textAllCaps="false"
+            android:textColor="@color/colorAccent"
             android:textSize="12sp" />
 
 
@@ -109,13 +112,16 @@
 
         <Button
             android:id="@+id/button_choose_time"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/button_choose_date"
             android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
             android:layout_toEndOf="@id/text_view_fbyt"
+            android:background="@drawable/choose_button_selector"
             android:text="@string/choose_time"
+            android:textAllCaps="false"
+            android:textColor="@color/colorAccent"
             android:textSize="12sp" />
 
         <TextView
@@ -132,9 +138,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/text_priority"
-            android:descendantFocusability="blocksDescendants"
             android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp" />
+            android:layout_marginTop="10dp"
+            android:descendantFocusability="blocksDescendants" />
 
     </RelativeLayout>
 </androidx.core.widget.NestedScrollView>

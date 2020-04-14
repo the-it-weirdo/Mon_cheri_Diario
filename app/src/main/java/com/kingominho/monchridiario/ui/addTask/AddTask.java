@@ -153,12 +153,14 @@ public class AddTask extends Fragment {
         buttonFinishByDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                buttonFinishByDate.setSelected(false);
                 pickDate();
             }
         });
         buttonFinishByTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                buttonFinishByTime.setSelected(false);
                 pickTime();
             }
         });
@@ -294,12 +296,14 @@ public class AddTask extends Fragment {
             editTextDescription.requestFocus();
             return false;
         } else if (buttonFinishByDate.getText().toString().compareTo(addTaskViewModel.default_date_prompt) == 0) {
-            buttonFinishByDate.setError("Please select Date");
-            buttonFinishByDate.requestFocus();
+            //buttonFinishByDate.setError("Please select Date");
+            //buttonFinishByDate.requestFocus();
+            buttonFinishByDate.setSelected(true);
             return false;
         } else if (buttonFinishByTime.getText().toString().compareTo(addTaskViewModel.default_time_prompt) == 0) {
-            buttonFinishByTime.setError("Please select Time");
-            buttonFinishByTime.requestFocus();
+            //buttonFinishByTime.setError("Please select Time");
+            //buttonFinishByTime.requestFocus();
+            buttonFinishByTime.setSelected(true);
             return false;
         } else {
             Log.d(TAG, "validateInput: inside else");
