@@ -1,7 +1,9 @@
 package com.kingominho.monchridiario.ui.manageCategory;
 
 
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -101,7 +103,7 @@ public class ManageCategoryFragment extends Fragment {
 
         Log.d(TAG, "setUpRecyclerView: " + manageCategoryViewModel.getCategoryAdapter());
 
-        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
+        /*new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
                 ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
             @Override
             public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder,
@@ -111,9 +113,12 @@ public class ManageCategoryFragment extends Fragment {
 
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-                manageCategoryViewModel.getCategoryAdapter().deleteItem(viewHolder.getAdapterPosition());
+                //manageCategoryViewModel.getCategoryAdapter().deleteItem(viewHolder.getAdapterPosition());
+                confirmDelete(manageCategoryViewModel.getCategoryAdapter()
+                        .getSnapshotByPosition(viewHolder.getAdapterPosition()
+                        ));
             }
-        }).attachToRecyclerView(recyclerView);
+        }).attachToRecyclerView(recyclerView);*/
 
         manageCategoryViewModel.getCategoryAdapter().setOnItemClickListener(new CategoryAdapter.OnItemClickListener() {
             @Override
@@ -122,7 +127,7 @@ public class ManageCategoryFragment extends Fragment {
                 //String id = documentSnapshot.getId();
                 //String path = documentSnapshot.getReference().getPath();
                 //documentSnapshot.getReference();
-                Toast.makeText(getContext(), category.getCategoryName() + "clicked.",
+                Toast.makeText(getContext(), "Long click for menu.",
                         Toast.LENGTH_SHORT).show();
             }
 
@@ -135,8 +140,7 @@ public class ManageCategoryFragment extends Fragment {
             @Override
             public void OnDeleteClick(DocumentSnapshot documentSnapshot, int position) {
                 //categoryAdapter.deleteItem(position);
-                TaskManager.getInstance().deleteAllTask(documentSnapshot.getId());
-                manageCategoryViewModel.getCategoryManager().deleteCategory(documentSnapshot.getReference());
+                confirmDelete(documentSnapshot);
             }
 
             @Override
@@ -225,5 +229,28 @@ public class ManageCategoryFragment extends Fragment {
     private void updateCategory(DocumentReference documentReference, String newName) {
         String message = manageCategoryViewModel.getCategoryManager().updateCategoryName(documentReference, newName);
         Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    private void confirmDelete(final DocumentSnapshot documentSnapshot) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Confirm action");
+        builder.setMessage("Are you sure you want to delete this ?\nThis action cannot be undone." +
+                "\nAll Tasks in this category will be deleted too.");
+
+        DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if(which == DialogInterface.BUTTON_POSITIVE) {
+                    TaskManager.getInstance().deleteAllTask(documentSnapshot.getId());
+                    manageCategoryViewModel.getCategoryManager().deleteCategory(documentSnapshot.getReference());
+                }
+                dialog.dismiss();
+            }
+        };
+        builder.setPositiveButton("Yes", listener);
+        builder.setNegativeButton("No", listener);
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 }

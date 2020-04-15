@@ -6,14 +6,16 @@
     android:layout_height="match_parent"
     android:background="@drawable/background"
     android:orientation="vertical"
+    android:padding="15dp"
     tools:context=".ui.dailyEntries.AddUpdateViewDailyEntry">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
         android:layout_marginStart="5dp"
+        android:layout_marginTop="5dp"
         android:layout_marginEnd="5dp">
+
         <TextClock
             android:id="@+id/current_date"
             android:layout_width="wrap_content"
@@ -68,12 +70,14 @@
     </RelativeLayout>
 
     <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/text_input_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fitsSystemWindows="true"
         android:layout_margin="7dp"
-        android:hint="My dear Diary..."
         android:layout_marginBottom="5dp"
+        android:background="@color/white_with_alpha"
+        android:fitsSystemWindows="true"
+        android:hint="My dear Diary..."
         app:hintAnimationEnabled="true">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -82,21 +86,24 @@
             android:layout_height="wrap_content"
             android:gravity="top"
             android:inputType="textMultiLine"
-            android:textColor="@android:color/black"
+            android:paddingStart="5dp"
             android:paddingTop="5dp"
             android:paddingEnd="5dp"
-            android:paddingStart="5dp"/>
-
-        <TextView
-            android:id="@+id/textview_view_entry"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:scrollbars="vertical"
-            android:gravity="top"
-            android:textColor="@android:color/black"
-            android:padding="5dp" />
+            android:textColor="@android:color/black" />
 
     </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:id="@+id/textview_view_entry"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="7dp"
+        android:layout_marginBottom="5dp"
+        android:fitsSystemWindows="true"
+        android:gravity="top"
+        android:padding="5dp"
+        android:scrollbars="vertical"
+        android:textColor="@android:color/black" />
 
 
 </LinearLayout>

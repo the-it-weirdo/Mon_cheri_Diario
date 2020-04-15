@@ -36,7 +36,7 @@ public class TaskAdapter extends FirestoreRecyclerAdapter<Task, TaskAdapter.Task
         holder.textViewFinishByDate.setText(date);
         holder.textViewPriority.setText(String.valueOf(model.getPriority()));
         holder.checkBox.setChecked(model.isFinished());
-        if(model.isFinished()) {
+        if (model.isFinished()) {
             holder.textViewDescription.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
         }
     }
@@ -91,7 +91,9 @@ public class TaskAdapter extends FirestoreRecyclerAdapter<Task, TaskAdapter.Task
 
     public interface OnTaskItemInteractionListener {
         void onDeleteClick(DocumentSnapshot documentSnapshot, int position);
+
         void onCheckedChange(DocumentSnapshot documentSnapshot, int position, boolean isChecked);
+
         void onDataChanged();
     }
 }

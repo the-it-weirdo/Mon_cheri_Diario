@@ -69,23 +69,27 @@
 
     <Button
         android:id="@+id/register_button"
+        style="@style/Widget.MaterialComponents.Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="@style/Widget.MaterialComponents.Button"
-        android:textColor="@color/white"
         android:layout_gravity="center_horizontal"
+        android:layout_marginTop="5dp"
         android:text="@string/signUpButton"
-        android:textSize="12sp"
-        android:textAllCaps="false" />
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="12sp" />
 
     <Button
         android:id="@+id/login_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_gravity="center_horizontal"
         android:layout_margin="10dp"
-        android:textSize="12sp"
-        android:text="@string/loginButton" />
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:padding="5dp"
+        android:text="@string/loginButton"
+        android:textAllCaps="false"
+        android:textColor="@color/colorAccent"
+        android:textSize="15sp" />
 
 </LinearLayout>

@@ -23,6 +23,7 @@ import android.widget.TextClock;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.textfield.TextInputLayout;
 import com.kingominho.monchridiario.R;
 import com.kingominho.monchridiario.manager.DailyEntryManager;
 import com.kingominho.monchridiario.models.DailyEntry;
@@ -37,6 +38,8 @@ public class AddUpdateViewDailyEntry extends Fragment {
     private TextView textViewTime;
     private EditText editTextEntry;
     private TextView textViewViewEntry;
+
+    private TextInputLayout textInputLayout;
 
     private String action;
 
@@ -63,6 +66,7 @@ public class AddUpdateViewDailyEntry extends Fragment {
         textViewTime = view.findViewById(R.id.time);
         editTextEntry = view.findViewById(R.id.edit_text_daily_entry);
         textViewViewEntry = view.findViewById(R.id.textview_view_entry);
+        textInputLayout = view.findViewById(R.id.text_input_layout);
         action = "";
         try {
             action = getArguments().getString("action");
@@ -104,6 +108,7 @@ public class AddUpdateViewDailyEntry extends Fragment {
 
     private void viewUI(DailyEntry entry) {
         editTextEntry.setVisibility(View.GONE);
+        textInputLayout.setVisibility(View.GONE);
         textViewViewEntry.setVisibility(View.VISIBLE);
         textClockTime.setVisibility(View.GONE);
         textClockDate.setVisibility(View.GONE);

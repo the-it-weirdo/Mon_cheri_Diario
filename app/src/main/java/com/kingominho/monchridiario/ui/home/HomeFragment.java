@@ -1,5 +1,7 @@
 package com.kingominho.monchridiario.ui.home;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,15 +23,20 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.kingominho.monchridiario.adapters.TaskAdapter;
 import com.kingominho.monchridiario.models.DailyEntry;
 import com.kingominho.monchridiario.adapters.DailyEntryAdapter;
 import com.kingominho.monchridiario.R;
+import com.kingominho.monchridiario.models.Task;
 
 public class HomeFragment extends Fragment {
 
     private HomeViewModel homeViewModel;
 
     private final String TAG = "HomeFragment: ";
+
+    private final int ITEM_TASK = 1;
+    private final int ITEM_DAILY_ENTRY = 2;
 
     private TextView textViewShowingWhat;
     private TextView textViewWelcome;
@@ -57,7 +64,7 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         homeViewModel =
-               new ViewModelProvider(this).get(HomeViewModel.class);
+                new ViewModelProvider(this).get(HomeViewModel.class);
         View root = inflater.inflate(R.layout.fragment_home, container, false);
         homeViewModel.getDailyEntryAdapter().startListening();
         homeViewModel.getTaskAdapter().startListening();
@@ -163,6 +170,25 @@ public class HomeFragment extends Fragment {
             }
         };
 
+        homeViewModel.getTaskAdapter().setTaskInteractionListener(new TaskAdapter.OnTaskItemInteractionListener() {
+            @Override
+            public void onDeleteClick(DocumentSnapshot documentSnapshot, int position) {
+                confirmDelete(documentSnapshot, position, ITEM_TASK);
+            }
+
+            @Override
+            public void onCheckedChange(DocumentSnapshot documentSnapshot, int position, boolean isChecked) {
+                Task task = documentSnapshot.toObject(Task.class);
+                task.setFinished(isChecked);
+                homeViewModel.getTaskManager().updateTask(documentSnapshot.getReference(), task);
+            }
+
+            @Override
+            public void onDataChanged() {
+                homeViewModel.setIsTaskListEmpty(homeViewModel.getTaskAdapter().getItemCount() == 0);
+            }
+        });
+
         homeViewModel.getDailyEntryAdapter().setOnClickListener(new DailyEntryAdapter.OnClickListener() {
             @Override
             public void OnClick(DocumentSnapshot documentSnapshot, int position) {
@@ -197,7 +223,8 @@ public class HomeFragment extends Fragment {
 
             @Override
             public void onDeleteEntryClick(DocumentSnapshot documentSnapshot, int position) {
-                homeViewModel.getDailyEntryManager().deleteDailyEntry(documentSnapshot.getReference());
+                //homeViewModel.getDailyEntryManager().deleteDailyEntry(documentSnapshot.getReference());
+                confirmDelete(documentSnapshot, position, ITEM_DAILY_ENTRY);
             }
         });
 
@@ -299,5 +326,38 @@ public class HomeFragment extends Fragment {
         b.setSelected(true);
         b.setEnabled(false);
         homeViewModel.setSelected(b.getId());
+    }
+
+    private void confirmDelete(final DocumentSnapshot documentSnapshot, final int position, final int item) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+        builder.setTitle("Confirm action.");
+        builder.setMessage("Are you sure you want to delete this ?" +
+                "\nThis action cannot be undone.");
+
+        DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (which == DialogInterface.BUTTON_POSITIVE) {
+                    switch (item) {
+                        case ITEM_TASK: {
+                            homeViewModel.getTaskManager().deleteTask(documentSnapshot.getReference());
+                            break;
+                        }
+                        case ITEM_DAILY_ENTRY: {
+                            homeViewModel.getDailyEntryManager().deleteDailyEntry(documentSnapshot.getReference());
+                            break;
+                        }
+                    }
+                }
+                dialog.dismiss();
+            }
+        };
+
+        builder.setPositiveButton("Yes", listener);
+        builder.setNegativeButton("No", listener);
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 }

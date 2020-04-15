@@ -140,10 +140,16 @@ public class DashboardActivity extends AppCompatActivity {
     public boolean onPrepareOptionsMenu(Menu menu) {
         invalidateOptionsMenu();
         int id = navController.getCurrentDestination().getId();
-        if (id == R.id.addUpdateViewDailyEntry || id == R.id.addTask) {
-            menu.findItem(R.id.action_logout).setVisible(false);
-        } else {
+        boolean bool = (id == R.id.nav_home)
+                || (id == R.id.nav_daily_entries)
+                || (id == R.id.nav_to_do)
+                || (id == R.id.nav_tools)
+                || (id == R.id.nav_share)
+                || (id == R.id.nav_send);
+        if (bool) {
             menu.findItem(R.id.action_logout).setVisible(true);
+        } else {
+            menu.findItem(R.id.action_logout).setVisible(false);
         }
         return super.onPrepareOptionsMenu(menu);
     }

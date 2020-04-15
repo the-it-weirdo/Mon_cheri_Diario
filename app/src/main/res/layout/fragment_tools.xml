@@ -13,6 +13,13 @@
 
         <include layout="@layout/account_details_card_view" />
 
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone"/>
+
         <include layout="@layout/settings_buttons_card_view" />
 
     </LinearLayout>

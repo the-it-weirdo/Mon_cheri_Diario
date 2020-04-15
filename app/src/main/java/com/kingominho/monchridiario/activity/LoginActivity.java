@@ -70,11 +70,11 @@ public class LoginActivity extends AppCompatActivity {
         buttonResetPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                buttonLogin.setEnabled(false);
+                /*buttonLogin.setEnabled(false);
                 buttonResetPassword.setEnabled(false);
                 buttonRegister.setEnabled(false);
                 editTextEmail.setEnabled(false);
-                editTextPassword.setEnabled(false);
+                editTextPassword.setEnabled(false);*/
                 showResetPasswordDialog();
             }
         });

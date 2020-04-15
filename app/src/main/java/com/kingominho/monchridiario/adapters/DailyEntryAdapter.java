@@ -120,6 +120,7 @@ public class DailyEntryAdapter extends FirestoreRecyclerAdapter<DailyEntry, Dail
         void onUpdateEntryClick(DocumentSnapshot documentSnapshot, int position);
 
         void onDeleteEntryClick(DocumentSnapshot documentSnapshot, int position);
+
     }
 
     public void setOnContextMenuItemClickListener(OnContextMenuItemClickListener listener) {
@@ -132,6 +133,7 @@ public class DailyEntryAdapter extends FirestoreRecyclerAdapter<DailyEntry, Dail
 
     public interface OnClickListener {
         void OnClick(DocumentSnapshot documentSnapshot, int position);
+
         void onDataChanged();
     }
 }

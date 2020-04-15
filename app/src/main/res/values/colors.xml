@@ -10,4 +10,8 @@
     <color name="info">#0091EA</color>
     <color name="error">#D50000</color>
 
+    <color name="error_bg">#4DD50000</color>
+
+    <color name="white_with_alpha">#19000000</color>
+
 </resources>

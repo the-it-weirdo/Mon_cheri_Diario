@@ -1,5 +1,7 @@
 package com.kingominho.monchridiario.ui.dailyEntries;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -144,10 +146,13 @@ public class DailyEntriesFragment extends Fragment {
 
                     @Override
                     public void onDeleteEntryClick(DocumentSnapshot documentSnapshot, int position) {
-                        dailyEntriesViewModel.getPosition().setValue(position - 1);
-                        dailyEntriesViewModel.getDailyEntryManager().deleteDailyEntry(documentSnapshot.getReference());
+                        //dailyEntriesViewModel.getPosition().setValue(position - 1);
+                        //dailyEntriesViewModel.getDailyEntryManager().deleteDailyEntry(documentSnapshot.getReference());
+                        Log.d(TAG, "onDeleteEntryClick: Delete button clicked for Daily Entry.");
+                        confirmDelete(documentSnapshot, position);
                     }
                 });
+
         dailyEntriesViewModel.getDailyEntryAdapter()
                 .setOnClickListener(new DailyEntryAdapter.OnClickListener() {
                     @Override
@@ -171,5 +176,31 @@ public class DailyEntriesFragment extends Fragment {
         bundle.putString("id", documentSnapshot.getId());
         bundle.putParcelable("DailyEntry", documentSnapshot.toObject(DailyEntry.class));
         Navigation.findNavController(getView()).navigate(R.id.addUpdateViewDailyEntry, bundle);
+    }
+
+    private void confirmDelete(final DocumentSnapshot documentSnapshot, final int position) {
+        Log.d(TAG, "confirmDelete: Inside Confirm delete.");
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+        builder.setTitle("Confirm action.");
+        builder.setMessage("Are you sure you want to delete this ?" +
+                "\nThis action cannot be undone.");
+
+        DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (which == DialogInterface.BUTTON_POSITIVE) {
+                    dailyEntriesViewModel.getPosition().setValue(position - 1);
+                    dailyEntriesViewModel.getDailyEntryManager().deleteDailyEntry(documentSnapshot.getReference());
+                }
+                dialog.dismiss();
+            }
+        };
+
+        builder.setPositiveButton("Yes", listener);
+        builder.setNegativeButton("No", listener);
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 }

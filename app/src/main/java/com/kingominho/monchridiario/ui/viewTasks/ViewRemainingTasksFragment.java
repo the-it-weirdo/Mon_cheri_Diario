@@ -1,6 +1,8 @@
 package com.kingominho.monchridiario.ui.viewTasks;
 
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -13,6 +15,7 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,8 +26,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.kingominho.monchridiario.R;
 import com.kingominho.monchridiario.adapters.TaskAdapter;
+import com.kingominho.monchridiario.models.Task;
 
 
 /**
@@ -88,6 +93,26 @@ public class ViewRemainingTasksFragment extends Fragment {
                 emptyTextView.setVisibility(viewTasksViewModel.getIsTaskListEmpty().getValue() ? View.VISIBLE : View.GONE);
             }
         });
+
+        viewTasksViewModel.getTaskAdapter().setTaskInteractionListener(new TaskAdapter.OnTaskItemInteractionListener() {
+            @Override
+            public void onDeleteClick(DocumentSnapshot documentSnapshot, int position) {
+                Log.d(TAG, "onDeleteClick: Task Delete button clicked.");
+                confirmDelete(documentSnapshot, position);
+            }
+
+            @Override
+            public void onCheckedChange(DocumentSnapshot documentSnapshot, int position, boolean isChecked) {
+                Task task = documentSnapshot.toObject(Task.class);
+                task.setFinished(isChecked);
+                viewTasksViewModel.getTaskManager().updateTask(documentSnapshot.getReference(), task);
+            }
+
+            @Override
+            public void onDataChanged() {
+                viewTasksViewModel.setIsTaskListEmpty(viewTasksViewModel.getTaskAdapter().getItemCount() == 0);
+            }
+        });
     }
 
     @Override
@@ -113,7 +138,6 @@ public class ViewRemainingTasksFragment extends Fragment {
         inflater.inflate(R.menu.menu_show_completed, menu);
     }
 
-    //TODO:Not working
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
@@ -125,5 +149,30 @@ public class ViewRemainingTasksFragment extends Fragment {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void confirmDelete(final DocumentSnapshot documentSnapshot, final int position) {
+        Log.d(TAG, "confirmDelete: confirmDelete function called.");
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+        builder.setTitle("Confirm action.");
+        builder.setMessage("Are you sure you want to delete this ?" +
+                "\nThis action cannot be undone.");
+
+        DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (which == DialogInterface.BUTTON_POSITIVE) {
+                    viewTasksViewModel.getTaskManager().deleteTask(documentSnapshot.getReference());
+                }
+                dialog.dismiss();
+            }
+        };
+
+        builder.setPositiveButton("Yes", listener);
+        builder.setNegativeButton("No", listener);
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 }

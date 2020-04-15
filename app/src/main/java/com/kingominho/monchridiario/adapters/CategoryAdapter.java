@@ -111,9 +111,14 @@ public class CategoryAdapter extends FirestoreRecyclerAdapter<Category, Category
         }
     }
 
-    public void deleteItem(int position) {
-        TaskManager.getInstance().deleteAllTask(getSnapshots().getSnapshot(position).getId());
-        getSnapshots().getSnapshot(position).getReference().delete();
+    /*public void deleteItem(int position) {
+        //TaskManager.getInstance().deleteAllTask(getSnapshots().getSnapshot(position).getId());
+        //getSnapshots().getSnapshot(position).getReference().delete();
+        listener.OnDeleteClick(getSnapshots().getSnapshot(position), position);
+    }*/
+
+    public DocumentSnapshot getSnapshotByPosition(int position) {
+        return getSnapshots().getSnapshot(position);
     }
 
     public interface OnItemClickListener {

@@ -11,12 +11,12 @@
     <string name="passHint">Enter your password</string>
     <string name="loginButtonText">Login</string>
     <string name="resetPasswordButtonText">Forgot password ?</string>
-    <string name="signUpButtonText">Don\'t have an account? Sign-Up</string>
+    <string name="signUpButtonText">Don\'t have an account?\nSign-Up</string>
 
     <!--SignUpActivity-->
     <string name="nameHint">Enter your first name</string>
     <string name="signUpButton">Sign Up</string>
-    <string name="loginButton">Already have an account ? Login</string>
+    <string name="loginButton">Already have an account ?\nLogin</string>
 
     <!--ChooseProfilePicture-->
     <string name="choose_button">Choose Image</string>

@@ -42,7 +42,7 @@ public class HomeViewModel extends ViewModel {
         taskAdapter = new TaskAdapter(taskManager.getAllTaskOfUserOptions(
                 FirebaseAuth.getInstance().getCurrentUser().getUid(), false));
 
-        taskAdapter.setTaskInteractionListener(new TaskAdapter.OnTaskItemInteractionListener() {
+        /*taskAdapter.setTaskInteractionListener(new TaskAdapter.OnTaskItemInteractionListener() {
             @Override
             public void onDeleteClick(DocumentSnapshot documentSnapshot, int position) {
                 taskManager.deleteTask(documentSnapshot.getReference());
@@ -59,11 +59,15 @@ public class HomeViewModel extends ViewModel {
             public void onDataChanged() {
                 isTaskListEmpty.setValue(taskAdapter.getItemCount() == 0);
             }
-        });
+        });*/
     }
 
     public LiveData<Boolean> getIsTaskListEmpty() {
         return isTaskListEmpty;
+    }
+
+    public void setIsTaskListEmpty(boolean value) {
+        this.isTaskListEmpty.setValue(value);
     }
 
     public LiveData<Integer> getSelected() {

@@ -15,33 +15,26 @@ public class ViewTasksViewModel extends ViewModel {
     private TaskAdapter taskAdapter;
     private MutableLiveData<Boolean> isTaskListEmpty;
 
+    private MutableLiveData<Boolean> confirmDelete;
+
     public ViewTasksViewModel() {
         taskManager = TaskManager.getInstance();
         isTaskListEmpty = new MutableLiveData<>();
         isTaskListEmpty.setValue(true);
+        confirmDelete = new MutableLiveData<>();
+        confirmDelete.setValue(false);
     }
 
     public void setTaskAdapter(String categoryId, boolean isFinished) {
         this.taskAdapter = new TaskAdapter(taskManager.getAllTasksOptions(categoryId, isFinished));
+    }
 
-        this.taskAdapter.setTaskInteractionListener(new TaskAdapter.OnTaskItemInteractionListener() {
-            @Override
-            public void onDeleteClick(DocumentSnapshot documentSnapshot, int position) {
-                taskManager.deleteTask(documentSnapshot.getReference());
-            }
+    public TaskManager getTaskManager() {
+        return taskManager;
+    }
 
-            @Override
-            public void onCheckedChange(DocumentSnapshot documentSnapshot, int position, boolean isChecked) {
-                Task task = documentSnapshot.toObject(Task.class);
-                task.setFinished(isChecked);
-                taskManager.updateTask(documentSnapshot.getReference(), task);
-            }
-
-            @Override
-            public void onDataChanged() {
-                isTaskListEmpty.setValue(taskAdapter.getItemCount() == 0);
-            }
-        });
+    public void setIsTaskListEmpty(boolean value) {
+        isTaskListEmpty.setValue(value);
     }
 
     public LiveData<Boolean> getIsTaskListEmpty() {
