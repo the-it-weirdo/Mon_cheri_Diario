@@ -207,15 +207,15 @@ public class ToolsFragment extends Fragment {
         Navigation.findNavController(view).navigate(R.id.manageCategory);
     }
 
-    private void updateUI(boolean bool) {
-        manageCategoriesButton.setEnabled(bool);
-        changeProfilePictureButton.setEnabled(bool);
-        changePasswordButton.setEnabled(bool);
-        deleteAccountButton.setEnabled(bool);
+    private void updateUI(boolean isEnabled) {
+        manageCategoriesButton.setEnabled(isEnabled);
+        changeProfilePictureButton.setEnabled(isEnabled);
+        changePasswordButton.setEnabled(isEnabled);
+        deleteAccountButton.setEnabled(isEnabled);
     }
 
-    private void updateUI(String message, boolean bool) {
-        updateUI(bool);
+    private void updateUI(String message, boolean isEnabled) {
+        updateUI(isEnabled);
         Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
     }
 
@@ -226,6 +226,7 @@ public class ToolsFragment extends Fragment {
 
     private void showReEnterPasswordDialog() {
         final Dialog dialog = new Dialog(getActivity());
+        dialog.setOnDismissListener(dialogDismissListener);
         dialog.setContentView(R.layout.enter_password_dialog);
         dialog.setTitle("Are you sure? Enter your password to continue..");
 
@@ -275,8 +276,6 @@ public class ToolsFragment extends Fragment {
         });
 
         dialog.show();
-
-        dialog.setOnDismissListener(dialogDismissListener);
     }
 
     private void onDialogDismissed() {
