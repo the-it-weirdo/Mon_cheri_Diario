@@ -84,7 +84,7 @@ public class CategoryAdapter extends FirestoreRecyclerAdapter<Category, Category
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
             menu.setHeaderTitle("Select Action");
-            MenuItem doWhatever = menu.add(Menu.NONE, 1, 1, "Update");
+            MenuItem doWhatever = menu.add(Menu.NONE, 1, 1, "Change Name");
             MenuItem delete = menu.add(Menu.NONE, 2, 2, "Delete");
 
             doWhatever.setOnMenuItemClickListener(this);

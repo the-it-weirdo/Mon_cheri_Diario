@@ -2,8 +2,11 @@ package com.kingominho.monchridiario.activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -11,17 +14,20 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.kingominho.monchridiario.R;
+import com.kingominho.monchridiario.manager.AccountManager;
+import com.kingominho.monchridiario.manager.CategoryManager;
 import com.kingominho.monchridiario.manager.InputValidationUtil;
+import java.io.ByteArrayOutputStream;
 
 public class RegistrationActivity extends AppCompatActivity {
 
@@ -87,21 +93,22 @@ public class RegistrationActivity extends AppCompatActivity {
         int passwordResult = inputValidationUtil.validatePassword(editTextPassword.getText().toString());
         int confirmPasswordResult = inputValidationUtil.confirmPassword(editTextPassword.getText().toString(),
                 editTextConfirmPassword.getText().toString());
-        if (nameResult == inputValidationUtil.ERROR_CODE_EMPTY_STRING) {
+        if (nameResult == InputValidationUtil.ERROR_CODE_EMPTY_STRING) {
             notifyUser(editTextName, "Name cannot be empty.");
-        } else if (nameResult == inputValidationUtil.ERROR_CODE_REGEX_NO_MATCH) {
+        } else if (nameResult == InputValidationUtil.ERROR_CODE_REGEX_NO_MATCH) {
             notifyUser(editTextName, "Name cannot contain symbols or numbers.");
-        } else if (emailResult == inputValidationUtil.ERROR_CODE_EMPTY_STRING) {
+        } else if (emailResult == InputValidationUtil.ERROR_CODE_EMPTY_STRING) {
             notifyUser(editTextEmail, "Email cannot be empty.");
-        } else if (emailResult == inputValidationUtil.ERROR_CODE_REGEX_NO_MATCH) {
+        } else if (emailResult == InputValidationUtil.ERROR_CODE_REGEX_NO_MATCH) {
             notifyUser(editTextEmail, "Invalid email.");
-        } else if (passwordResult == inputValidationUtil.ERROR_CODE_EMPTY_STRING) {
+        } else if (passwordResult == InputValidationUtil.ERROR_CODE_EMPTY_STRING) {
             notifyUser(editTextPassword, "Password cannot be empty.");
-        } else if (passwordResult == inputValidationUtil.ERROR_CODE_REGEX_NO_MATCH) {
-            notifyUser(editTextPassword, inputValidationUtil.ERROR_MESSAGE_INVALID_PASSWORD);
-        } else if (confirmPasswordResult == inputValidationUtil.ERROR_CODE_EMPTY_STRING) {
+        } /*else if (passwordResult == InputValidationUtil.ERROR_CODE_REGEX_NO_MATCH) {
+            notifyUser(editTextPassword, InputValidationUtil.ERROR_MESSAGE_INVALID_PASSWORD); //not checking regex since FirebaseAuth will
+            //do it for us. Check FirebaseAuthWeakPasswordException
+        } */ else if (confirmPasswordResult == InputValidationUtil.ERROR_CODE_EMPTY_STRING) {
             notifyUser(editTextConfirmPassword, "Field cannot be empty.");
-        } else if (confirmPasswordResult != inputValidationUtil.SUCCESS_CODE_PASSWORDS_MATCH) {
+        } else if (confirmPasswordResult != InputValidationUtil.SUCCESS_CODE_PASSWORDS_MATCH) {
             notifyUser(editTextConfirmPassword, "Passwords does not match.");
         } else {
             return true;
@@ -117,11 +124,22 @@ public class RegistrationActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-
-                            FirebaseUser user = mAuth.getCurrentUser();
+                            final FirebaseUser user = mAuth.getCurrentUser();
                             if (user != null) {
-                                UserProfileChangeRequest userProfileChangeRequest = new UserProfileChangeRequest.Builder()
-                                        .setDisplayName(displayName).build();
+
+                                //setting default profile picture.
+                                Resources res = getResources();
+                                Drawable drawable = res.getDrawable(R.drawable.user);
+                                Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
+                                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                                byte[] bitMapData = stream.toByteArray();
+                                AccountManager.getInstance().setProfilePicture(bitMapData);
+
+                                UserProfileChangeRequest userProfileChangeRequest = new
+                                        UserProfileChangeRequest.Builder()
+                                        .setDisplayName(displayName)
+                                        .build();
                                 user.updateProfile(userProfileChangeRequest)
                                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                                             @Override
@@ -131,6 +149,8 @@ public class RegistrationActivity extends AppCompatActivity {
                                                     progressBar.setVisibility(View.GONE);
                                                     Toast.makeText(getApplicationContext(), "Registration Successful.",
                                                             Toast.LENGTH_SHORT).show();
+                                                    CategoryManager.getInstance()
+                                                            .createNewCategory("Default category.");
                                                 } else {
                                                     Log.d(RegistrationActivity.TAG, "Name couldn't be set!!");
                                                 }
@@ -142,8 +162,11 @@ public class RegistrationActivity extends AppCompatActivity {
                                         });
                             }
                         } else {
-                            if(task.getException() instanceof FirebaseAuthUserCollisionException) {
+                            if (task.getException() instanceof FirebaseAuthUserCollisionException) {
                                 notifyUser(editTextEmail, "Email already in use by another account. Login please.");
+                            }
+                            if (task.getException() instanceof FirebaseAuthWeakPasswordException) {
+                                notifyUser(editTextPassword, InputValidationUtil.ERROR_MESSAGE_INVALID_PASSWORD);
                             }
                             //progressBar.setVisibility(View.GONE);
                             //Toast.makeText(getApplicationContext(), "Registration failed!!", Toast.LENGTH_SHORT).show();

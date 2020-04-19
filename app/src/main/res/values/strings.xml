@@ -8,7 +8,7 @@
 
     <!--LoginActivity & SignUpActivity-->
     <string name="uNameHint">Enter your E-Mail</string>
-    <string name="passHint">Enter your password</string>
+    <string name="passHint">Create your password</string>
     <string name="loginButtonText">Login</string>
     <string name="resetPasswordButtonText">Forgot password ?</string>
     <string name="signUpButtonText">Don\'t have an account?\nSign-Up</string>
@@ -21,6 +21,7 @@
     <!--ChooseProfilePicture-->
     <string name="choose_button">Choose Image</string>
     <string name="upload_button">Upload Image</string>
+    <string name="skip_button">Skip</string>
 
     <!--Navigation-->
     <string name="nav_header_desc">Navigation header</string>

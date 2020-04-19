@@ -94,27 +94,22 @@ public class LoginActivity extends AppCompatActivity {
         InputValidationUtil inputValidationUtil = new InputValidationUtil();
         int emailResult = inputValidationUtil.validateEmail(editTextEmail.getText().toString());
         int passResult = inputValidationUtil.validatePassword(editTextPassword.getText().toString());
-        if (emailResult == inputValidationUtil.ERROR_CODE_EMPTY_STRING) {
+        if (emailResult == InputValidationUtil.ERROR_CODE_EMPTY_STRING) {
             notifyUser(editTextEmail, "Email cannot be empty!");
             //editTextEmail.setError("Email cannot be empty!");
             //editTextEmail.requestFocus();
             return false;
-        } else if (emailResult == inputValidationUtil.ERROR_CODE_REGEX_NO_MATCH) {
+        } else if (emailResult == InputValidationUtil.ERROR_CODE_REGEX_NO_MATCH) {
             notifyUser(editTextEmail, "Invalid Email !");
             //editTextEmail.setError("Invalid email!!");
             //editTextEmail.requestFocus();
             return false;
-        } else if (passResult == inputValidationUtil.ERROR_CODE_EMPTY_STRING) {
+        } else if (passResult == InputValidationUtil.ERROR_CODE_EMPTY_STRING) {
             notifyUser(editTextPassword, "Password cannot be empty!");
             //editTextPassword.setError("Password cannot be empty!!");
             //editTextPassword.requestFocus();
             return false;
-        } else if (passResult == inputValidationUtil.ERROR_CODE_REGEX_NO_MATCH) {
-            notifyUser(editTextPassword, "Invalid password.");
-            //editTextPassword.setError(inputValidationUtil.ERROR_MESSAGE_INVALID_PASSWORD);
-            //editTextPassword.requestFocus();
-            return false;
-        } else {
+        } else { //Not checking password regex as Firebase Authentication will auto-check for wrong password.
             return true;
         }
     }

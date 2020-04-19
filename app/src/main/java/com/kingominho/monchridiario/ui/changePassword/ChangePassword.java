@@ -24,6 +24,7 @@ import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
 import com.kingominho.monchridiario.R;
 import com.kingominho.monchridiario.manager.AccountManager;
@@ -86,8 +87,8 @@ public class ChangePassword extends Fragment {
                             ((FirebaseAuthInvalidUserException) e).getErrorCode();
                     Log.d(TAG, "onFailure: " + errorCode, e);
                     notifyUser("Error code: " + errorCode + " " + e.getLocalizedMessage());
-
-                } else {
+                }
+                else {
                     notifyUser(e.getLocalizedMessage());
                 }
             }
@@ -104,7 +105,12 @@ public class ChangePassword extends Fragment {
 
             @Override
             public void OnTaskNotSuccessful(Task task, int task_id) {
-                notifyUser("Something went wrong: " + task.getException().getLocalizedMessage());
+                Exception e = task.getException();
+                if (e instanceof FirebaseAuthWeakPasswordException) {
+                    notifyUser(editTextNewPassword, InputValidationUtil.ERROR_MESSAGE_INVALID_PASSWORD);
+                }
+                Log.e(TAG, "OnTaskNotSuccessful: ", e);
+                //notifyUser("Something went wrong: " + task.getException().getLocalizedMessage());
             }
 
             @Override
@@ -133,13 +139,13 @@ public class ChangePassword extends Fragment {
                 editTextConfirmPassword.getText().toString());
         if (passwordResult == InputValidationUtil.ERROR_CODE_EMPTY_STRING) {
             notifyUser(editTextCurrentPassword, "Current password cannot be empty.");
-        } else if (passwordResult == InputValidationUtil.ERROR_CODE_REGEX_NO_MATCH) {
+        } /*else if (passwordResult == InputValidationUtil.ERROR_CODE_REGEX_NO_MATCH) {
             notifyUser(editTextCurrentPassword, "Invalid password.");
-        } else if (newPasswordResult == InputValidationUtil.ERROR_CODE_EMPTY_STRING) {
+        } */else if (newPasswordResult == InputValidationUtil.ERROR_CODE_EMPTY_STRING) {
             notifyUser(editTextNewPassword, "New Password cannot be empty.");
-        } else if (newPasswordResult == InputValidationUtil.ERROR_CODE_REGEX_NO_MATCH) {
+        }/* else if (newPasswordResult == InputValidationUtil.ERROR_CODE_REGEX_NO_MATCH) {
             notifyUser(editTextNewPassword, InputValidationUtil.ERROR_MESSAGE_INVALID_PASSWORD);
-        } else if (confirmNewPassword == InputValidationUtil.ERROR_CODE_EMPTY_STRING) {
+        }*/ else if (confirmNewPassword == InputValidationUtil.ERROR_CODE_EMPTY_STRING) {
             notifyUser(editTextConfirmPassword, "Field cannot be empty.");
         } else if (confirmNewPassword != InputValidationUtil.SUCCESS_CODE_PASSWORDS_MATCH) {
             notifyUser(editTextConfirmPassword, "Passwords does not match.");

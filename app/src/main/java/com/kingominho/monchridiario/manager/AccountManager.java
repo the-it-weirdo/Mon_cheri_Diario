@@ -46,9 +46,9 @@ public class AccountManager {
 
     private static AccountManager mInstance;
 
-    AccountManagerTaskListener accountManagerTaskListener;
+    private AccountManagerTaskListener accountManagerTaskListener;
 
-    static final String PROFILE_PHOTO_UPLOAD_PATH = "profilePictures";
+    public static final String PROFILE_PHOTO_UPLOAD_PATH = "profilePictures";
 
     private FirebaseStorage mStorage;
     private DatabaseReference mDatabaseReference;
@@ -162,6 +162,7 @@ public class AccountManager {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
+                            accountManagerTaskListener.OnTaskSuccessful(task, TASK_ID_REAUTHENTICATE_USER);
                             user.updatePassword(newPassword)
                                     .addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override
@@ -178,7 +179,8 @@ public class AccountManager {
                                     .addOnFailureListener(new OnFailureListener() {
                                         @Override
                                         public void onFailure(@NonNull Exception e) {
-                                            accountManagerTaskListener.OnFailure(e);
+                                            //accountManagerTaskListener.OnFailure(e);
+                                            Log.e(TAG, "onFailure: ", e);
                                         }
                                     });
                         } else {

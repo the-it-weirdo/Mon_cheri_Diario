@@ -78,7 +78,7 @@
                 android:layout_height="match_parent"
                 android:drawableStart="@drawable/ic_lock_black_24dp"
                 android:drawablePadding="10dp"
-                android:hint="@string/passHint"
+                android:hint="@string/re_enter_new_password"
                 android:inputType="textPassword" />
         </com.google.android.material.textfield.TextInputLayout>
 

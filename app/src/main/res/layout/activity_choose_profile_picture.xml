@@ -18,11 +18,31 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
+            android:layout_toEndOf="@id/margin"
             android:layout_gravity="end"
             android:layout_margin="10dp"
             android:text="@string/choose_button"
             android:textColor="@color/white"
+            android:textSize="12sp" />
+
+        <View
+            android:id="@+id/margin"
+            android:layout_width="2dp"
+            android:layout_height="2dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true" />
+
+        <Button
+            android:id="@+id/button_skip_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_toStartOf="@id/margin"
+            android:background="@drawable/secondary_button"
+            android:layout_gravity="end"
+            android:layout_margin="10dp"
+            android:text="@string/skip_button"
+            android:textColor="@color/colorPrimary"
             android:textSize="12sp" />
 
 

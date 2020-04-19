@@ -10,14 +10,16 @@ public class InputValidationUtil {
     public static final int ERROR_CODE_EMPTY_STRING = -1;
     public static final int ERROR_CODE_REGEX_NO_MATCH = -2;
     public static final int ERROR_CODE_PASSWORD_NO_MATCH = -3;
-    public static final String ERROR_MESSAGE_INVALID_PASSWORD = "Please enter a valid password." +
+    public static final String ERROR_MESSAGE_INVALID_PASSWORD =
+            /*"Please enter a valid password." +
             " Your password should contain at least 1 number, 1 capital letter, 1 small letter" +
-            "and 1 special character. Minimum password length should be 8 characters.";
+            "and 1 special character. Minimum password length should be 8 characters."*/
+            "Password is weak. Consider adding 1 capital letter, 1 small letter, 1 number, 1 symbol and minimum 6 characters.";
 
     public int validatePassword(String passPhrase) {
         if (passPhrase.trim().isEmpty()) {
             return ERROR_CODE_EMPTY_STRING;
-        } else {
+        } /*else {
             String passwordRegex = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$";
             Pattern patternPassword = Pattern.compile(passwordRegex);
             Matcher matcherPassword = patternPassword.matcher(passPhrase);
@@ -27,6 +29,9 @@ public class InputValidationUtil {
             } else {
                 return SUCCESS_CODE_REGEX_MATCH;
             }
+        }*/
+        else {
+            return SUCCESS_CODE_REGEX_MATCH;
         }
     }
 
@@ -48,7 +53,12 @@ public class InputValidationUtil {
     }
 
     public int confirmPassword(String passPhrase, String confirmedPassPhrase) {
-        int passPhraseResult = validatePassword(passPhrase);
+        if(passPhrase.compareTo(confirmedPassPhrase) == 0) {
+            return SUCCESS_CODE_PASSWORDS_MATCH;
+        } else {
+            return ERROR_CODE_PASSWORD_NO_MATCH;
+        }
+        /*int passPhraseResult = validatePassword(passPhrase);
         int confirmedPassPhraseResult = validatePassword(confirmedPassPhrase);
         if (passPhraseResult == SUCCESS_CODE_REGEX_MATCH) {
             if (confirmedPassPhraseResult == SUCCESS_CODE_REGEX_MATCH) {
@@ -62,7 +72,7 @@ public class InputValidationUtil {
             }
         } else {
             return passPhraseResult;
-        }
+        }*/
     }
 
     public int validateName(String name) {

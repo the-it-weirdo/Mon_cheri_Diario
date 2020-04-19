@@ -25,6 +25,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.kingominho.monchridiario.manager.AccountManager;
 import com.kingominho.monchridiario.activity.ChooseProfilePicture;
 import com.kingominho.monchridiario.activity.LoginActivity;
@@ -41,13 +42,15 @@ public class ToolsFragment extends Fragment {
 
     private ToolsViewModel toolsViewModel;
 
-    Button changeProfilePictureButton, changePasswordButton,
+    private Button changeProfilePictureButton, changePasswordButton,
             manageCategoriesButton, deleteAccountButton;
-    ProgressBar progressBar;
+    private ProgressBar progressBar;
 
-    AccountManager accountManager;
+    private  AccountManager accountManager;
 
-    DialogInterface.OnDismissListener dialogDismissListener;
+    private  DialogInterface.OnDismissListener dialogDismissListener;
+
+    private boolean isDeleteInititated = false;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -121,6 +124,7 @@ public class ToolsFragment extends Fragment {
         accountManager.setAccountManagerTaskListener(new AccountManager.AccountManagerTaskListener() {
             @Override
             public void OnFailure(Exception e) {
+                isDeleteInititated = false;
                 progressBar.setVisibility(View.GONE);
                 if (e instanceof FirebaseAuthInvalidCredentialsException) {
                     updateUI("Invalid password", true);
@@ -148,6 +152,7 @@ public class ToolsFragment extends Fragment {
             @Override
             public void OnTaskNotSuccessful(Task task, int task_id) {
                 progressBar.setVisibility(View.GONE);
+                isDeleteInititated = false;
                 updateUI(task.getException().getLocalizedMessage(), true);
             }
 
@@ -255,8 +260,9 @@ public class ToolsFragment extends Fragment {
                     }
                     case InputValidationUtil.SUCCESS_CODE_REGEX_MATCH: {
                         dialog.dismiss();
+                        isDeleteInititated = true;
                         progressBar.setVisibility(View.VISIBLE);
-                        updateUI(false);
+                        //updateUI(false);
                         accountManager.reAuthenticateUser(FirebaseAuth.getInstance().getCurrentUser().getEmail(),
                                 s);
                         break;
@@ -279,6 +285,10 @@ public class ToolsFragment extends Fragment {
     }
 
     private void onDialogDismissed() {
-        updateUI(true);
+        if (isDeleteInititated) {
+            updateUI(false);
+        } else {
+            updateUI(true);
+        }
     }
 }

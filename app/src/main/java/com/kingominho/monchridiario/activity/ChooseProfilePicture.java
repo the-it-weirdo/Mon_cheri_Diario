@@ -29,6 +29,8 @@ import com.google.firebase.storage.StorageReference;
 import com.kingominho.monchridiario.R;
 import com.kingominho.monchridiario.manager.AccountManager;
 import com.squareup.picasso.Picasso;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -43,7 +45,7 @@ public class ChooseProfilePicture extends AppCompatActivity implements AccountMa
 
     private static final int PICK_IMAGE_REQUEST = 1;
 
-    private Button mButtonChooseImage, mButtonUpload;
+    private Button mButtonChooseImage, mButtonUpload, mSkipImageButton;
     private ImageView mImageView;
     private ProgressBar mProgressBar;
 
@@ -51,8 +53,6 @@ public class ChooseProfilePicture extends AppCompatActivity implements AccountMa
 
     private FirebaseAuth mAuth;
     private FirebaseUser mUser;
-    private StorageReference mStorageReference;
-    private DatabaseReference mDatabaseReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +62,7 @@ public class ChooseProfilePicture extends AppCompatActivity implements AccountMa
         mButtonChooseImage = (Button) findViewById(R.id.button_choose_image);
         mButtonUpload = (Button) findViewById(R.id.button_upload);
         mImageView = (ImageView) findViewById(R.id.image_view);
+        mSkipImageButton = (Button) findViewById(R.id.button_skip_image);
         mProgressBar = (ProgressBar) findViewById(R.id.progress_bar);
 
         mAuth = FirebaseAuth.getInstance();
@@ -71,13 +72,12 @@ public class ChooseProfilePicture extends AppCompatActivity implements AccountMa
             startActivity(intent);
             finish();
         }
-        mStorageReference = FirebaseStorage.getInstance().getReference(ChooseProfilePicture.UPLOAD_PATH);
-        mDatabaseReference = FirebaseDatabase.getInstance().getReference(ChooseProfilePicture.UPLOAD_PATH);
 
         mButtonChooseImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openFileChooser();
+                //openFileChooser();
+                getImageFromUser();
             }
         });
 
@@ -92,12 +92,29 @@ public class ChooseProfilePicture extends AppCompatActivity implements AccountMa
                 }
             }
         });
+
+        mSkipImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mImageUri = Uri.EMPTY;
+                OnSuccessfulProfilePictureSet();
+            }
+        });
     }
 
     private boolean isNetworkConnected() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 
         return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
+    }
+
+    private void getImageFromUser() {
+        CropImage.activity()
+                .setGuidelines(CropImageView.Guidelines.ON)
+                .setCropShape(CropImageView.CropShape.RECTANGLE)
+                .setAspectRatio(1, 1)
+                .setFixAspectRatio(true)
+                .start(this);
     }
 
     private void openFileChooser() {
@@ -129,6 +146,7 @@ public class ChooseProfilePicture extends AppCompatActivity implements AccountMa
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 bmp.compress(Bitmap.CompressFormat.JPEG, 15, baos);
                 byte[] data = baos.toByteArray();
+                Log.d(TAG, "uploadFile: data byte:" + data);
                 AccountManager accountManager = AccountManager.getInstance();
                 accountManager.setAccountManagerTaskListener(this);
                 accountManager.setProfilePicture(data);
@@ -144,11 +162,24 @@ public class ChooseProfilePicture extends AppCompatActivity implements AccountMa
 
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
                 && data != null && data.getData() != null) {
-            mImageUri = data.getData();
+            /*mImageUri = data.getData();
             Picasso.with(this)
                     .load(mImageUri)
                     .transform(new CropCircleTransformation())
-                    .into(mImageView);
+                    .into(mImageView);*/
+        } else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK) {
+                mImageUri = result.getUri();
+                Log.d(TAG, "onActivityResult: Uri: " + mImageUri.toString());
+                Picasso.with(this)
+                        .load(mImageUri)
+                        .transform(new CropCircleTransformation())
+                        .into(mImageView);
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                Exception error = result.getError();
+                Log.e(TAG, "onActivityResult: ", error);
+            }
         }
     }
 
@@ -180,13 +211,12 @@ public class ChooseProfilePicture extends AppCompatActivity implements AccountMa
     public void OnTaskSuccessful(Task task, int task_id) {
         if (task_id == AccountManager.TASK_ID_CHANGE_PROFILE_PICTURE) {
             OnSuccessfulProfilePictureSet();
+            mButtonUpload.setEnabled(true);
+            Toast.makeText(getApplicationContext(), "Profile Picture set successful!", Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void OnSuccessfulProfilePictureSet() {
-        mButtonUpload.setEnabled(true);
-        Toast.makeText(getApplicationContext(), "Profile Picture set successful!", Toast.LENGTH_SHORT).show();
-
+    void OnSuccessfulProfilePictureSet() {
         Intent intent = new Intent(ChooseProfilePicture.this, MainActivity.class);
         startActivity(intent);
         finish();
@@ -202,13 +232,12 @@ public class ChooseProfilePicture extends AppCompatActivity implements AccountMa
 
     private void updateUI(boolean value) {
         if (value) {
-            mButtonUpload.setEnabled(true);
-            mButtonChooseImage.setEnabled(true);
             mProgressBar.setVisibility(View.GONE);
         } else {
-            mButtonUpload.setEnabled(false);
-            mButtonChooseImage.setEnabled(false);
             mProgressBar.setVisibility(View.VISIBLE);
         }
+        mSkipImageButton.setEnabled(value);
+        mButtonUpload.setEnabled(value);
+        mButtonChooseImage.setEnabled(value);
     }
 }
