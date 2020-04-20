@@ -291,4 +291,10 @@ public class ToolsFragment extends Fragment {
             updateUI(true);
         }
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        accountManager.setAccountManagerTaskListener(null);
+    }
 }

@@ -70,7 +70,7 @@ public class HomeFragment extends Fragment {
         homeViewModel.getTaskAdapter().startListening();
         textViewWelcome = root.findViewById(R.id.welcome_text_view);
         recyclerView = root.findViewById(R.id.recycler_view_tasks);
-        //recyclerView.setHasFixedSize(true);
+        recyclerView.setHasFixedSize(true);
         taskButton = root.findViewById(R.id.show_tasks_button);
         dailyEntryButton = root.findViewById(R.id.show_de_button);
         emptyTextView = root.findViewById(R.id.empty_text_view_task);

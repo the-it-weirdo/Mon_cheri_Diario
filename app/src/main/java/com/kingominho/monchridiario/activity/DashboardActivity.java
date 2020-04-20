@@ -77,7 +77,7 @@ public class DashboardActivity extends AppCompatActivity {
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.nav_home, R.id.nav_daily_entries, R.id.nav_to_do,
-                R.id.nav_tools, R.id.nav_share, R.id.nav_send)
+                R.id.nav_tools, /*R.id.nav_share,*/ R.id.nav_about)
                 .setDrawerLayout(drawer)
                 .build();
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);
@@ -144,13 +144,14 @@ public class DashboardActivity extends AppCompatActivity {
                 || (id == R.id.nav_daily_entries)
                 || (id == R.id.nav_to_do)
                 || (id == R.id.nav_tools)
-                || (id == R.id.nav_share)
-                || (id == R.id.nav_send);
-        if (bool) {
+                //|| (id == R.id.nav_share)
+                || (id == R.id.nav_about);
+        /*if (bool) {
             menu.findItem(R.id.action_logout).setVisible(true);
         } else {
             menu.findItem(R.id.action_logout).setVisible(false);
-        }
+        }*/
+        menu.findItem(R.id.action_logout).setVisible(bool);
         return super.onPrepareOptionsMenu(menu);
     }
 

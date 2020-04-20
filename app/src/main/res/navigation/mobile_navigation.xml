@@ -61,17 +61,17 @@
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
 
-    <fragment
+    <!--<fragment
         android:id="@+id/nav_share"
         android:name="com.kingominho.monchridiario.ui.share.ShareFragment"
         android:label="@string/menu_share"
-        tools:layout="@layout/fragment_share" />
+        tools:layout="@layout/fragment_share" />-->
 
     <fragment
-        android:id="@+id/nav_send"
-        android:name="com.kingominho.monchridiario.ui.send.SendFragment"
-        android:label="@string/menu_send"
-        tools:layout="@layout/fragment_send" />
+        android:id="@+id/nav_about"
+        android:name="com.kingominho.monchridiario.ui.about.AboutFragment"
+        android:label="@string/menu_about"
+        tools:layout="@layout/fragment_about" />
     <fragment
         android:id="@+id/manageCategory"
         android:name="com.kingominho.monchridiario.ui.manageCategory.ManageCategoryFragment"

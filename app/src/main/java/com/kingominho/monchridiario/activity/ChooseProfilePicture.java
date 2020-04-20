@@ -144,9 +144,9 @@ public class ChooseProfilePicture extends AppCompatActivity implements AccountMa
             }
             if (bmp != null) {
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                bmp.compress(Bitmap.CompressFormat.JPEG, 15, baos);
+                bmp.compress(Bitmap.CompressFormat.JPEG, 10, baos);
                 byte[] data = baos.toByteArray();
-                Log.d(TAG, "uploadFile: data byte:" + data);
+                //Log.d(TAG, "uploadFile: data byte:" + data);
                 AccountManager accountManager = AccountManager.getInstance();
                 accountManager.setAccountManagerTaskListener(this);
                 accountManager.setProfilePicture(data);
@@ -178,6 +178,8 @@ public class ChooseProfilePicture extends AppCompatActivity implements AccountMa
                         .into(mImageView);
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
+                Toast.makeText(getApplicationContext(), "File is not a picture. Please choose a picture.",
+                        Toast.LENGTH_SHORT).show();
                 Log.e(TAG, "onActivityResult: ", error);
             }
         }
@@ -217,7 +219,7 @@ public class ChooseProfilePicture extends AppCompatActivity implements AccountMa
     }
 
     void OnSuccessfulProfilePictureSet() {
-        Intent intent = new Intent(ChooseProfilePicture.this, MainActivity.class);
+        Intent intent = new Intent(ChooseProfilePicture.this, DashboardActivity.class);
         startActivity(intent);
         finish();
     }
@@ -225,7 +227,7 @@ public class ChooseProfilePicture extends AppCompatActivity implements AccountMa
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Intent intent = new Intent(ChooseProfilePicture.this, MainActivity.class);
+        Intent intent = new Intent(ChooseProfilePicture.this, DashboardActivity.class);
         startActivity(intent);
         finish();
     }

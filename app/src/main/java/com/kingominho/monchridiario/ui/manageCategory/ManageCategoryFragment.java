@@ -222,13 +222,13 @@ public class ManageCategoryFragment extends Fragment {
     }
 
     private void addCategory(String name) {
-        String message = manageCategoryViewModel.getCategoryManager().createNewCategory(name);
-        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+        manageCategoryViewModel.getCategoryManager().createNewCategory(name);
+        //Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
     }
 
     private void updateCategory(DocumentReference documentReference, String newName) {
-        String message = manageCategoryViewModel.getCategoryManager().updateCategoryName(documentReference, newName);
-        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+        manageCategoryViewModel.getCategoryManager().updateCategoryName(documentReference, newName);
+        //Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
     }
 
     private void confirmDelete(final DocumentSnapshot documentSnapshot) {

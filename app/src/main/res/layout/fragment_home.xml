@@ -95,7 +95,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_below="@id/user_details_card"
             android:gravity="top|center_vertical"
             android:orientation="vertical">

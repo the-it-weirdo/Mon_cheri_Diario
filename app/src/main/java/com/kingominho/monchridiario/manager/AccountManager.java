@@ -89,12 +89,14 @@ public class AccountManager {
                                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                     @Override
                                                     public void onComplete(@NonNull Task<Void> task) {
-                                                        if (task.isSuccessful()) {
-                                                            accountManagerTaskListener.OnTaskSuccessful(task,
-                                                                    TASK_ID_CHANGE_PROFILE_PICTURE);
-                                                        } else {
-                                                            accountManagerTaskListener.OnTaskNotSuccessful(task,
-                                                                    TASK_ID_CHANGE_PROFILE_PICTURE);
+                                                        if (accountManagerTaskListener != null) {
+                                                            if (task.isSuccessful()) {
+                                                                accountManagerTaskListener.OnTaskSuccessful(task,
+                                                                        TASK_ID_CHANGE_PROFILE_PICTURE);
+                                                            } else {
+                                                                accountManagerTaskListener.OnTaskNotSuccessful(task,
+                                                                        TASK_ID_CHANGE_PROFILE_PICTURE);
+                                                            }
                                                         }
                                                     }
                                                 });
@@ -103,7 +105,9 @@ public class AccountManager {
                                 .addOnFailureListener(new OnFailureListener() {
                                     @Override
                                     public void onFailure(@NonNull Exception e) {
-                                        accountManagerTaskListener.OnFailure(e);
+                                        if (accountManagerTaskListener != null) {
+                                            accountManagerTaskListener.OnFailure(e);
+                                        }
                                     }
                                 });
                     }
@@ -111,7 +115,9 @@ public class AccountManager {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        accountManagerTaskListener.OnFailure(e);
+                        if (accountManagerTaskListener != null) {
+                            accountManagerTaskListener.OnFailure(e);
+                        }
                     }
                 });
     }
@@ -129,13 +135,17 @@ public class AccountManager {
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
-                                        accountManagerTaskListener.OnSuccess("Profile Picture Deleted.");
+                                        if (accountManagerTaskListener != null) {
+                                            accountManagerTaskListener.OnSuccess("Profile Picture Deleted.");
+                                        }
                                     }
                                 })
                                 .addOnFailureListener(new OnFailureListener() {
                                     @Override
                                     public void onFailure(@NonNull Exception e) {
-                                        accountManagerTaskListener.OnFailure(e);
+                                        if (accountManagerTaskListener != null) {
+                                            accountManagerTaskListener.OnFailure(e);
+                                        }
                                     }
                                 });
                     }
@@ -143,7 +153,9 @@ public class AccountManager {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        accountManagerTaskListener.OnFailure(e);
+                        if (accountManagerTaskListener != null) {
+                            accountManagerTaskListener.OnFailure(e);
+                        }
                     }
                 });
     }
@@ -162,17 +174,21 @@ public class AccountManager {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
-                            accountManagerTaskListener.OnTaskSuccessful(task, TASK_ID_REAUTHENTICATE_USER);
+                            if (accountManagerTaskListener != null) {
+                                accountManagerTaskListener.OnTaskSuccessful(task, TASK_ID_REAUTHENTICATE_USER);
+                            }
                             user.updatePassword(newPassword)
                                     .addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
-                                            if (task.isSuccessful()) {
-                                                accountManagerTaskListener.OnTaskSuccessful(task,
-                                                        TASK_ID_CHANGE_PASSWORD);
-                                            } else {
-                                                accountManagerTaskListener.OnTaskNotSuccessful(task,
-                                                        TASK_ID_CHANGE_PASSWORD);
+                                            if (accountManagerTaskListener != null) {
+                                                if (task.isSuccessful()) {
+                                                    accountManagerTaskListener.OnTaskSuccessful(task,
+                                                            TASK_ID_CHANGE_PASSWORD);
+                                                } else {
+                                                    accountManagerTaskListener.OnTaskNotSuccessful(task,
+                                                            TASK_ID_CHANGE_PASSWORD);
+                                                }
                                             }
                                         }
                                     })
@@ -184,14 +200,18 @@ public class AccountManager {
                                         }
                                     });
                         } else {
-                            accountManagerTaskListener.OnTaskNotSuccessful(task, TASK_ID_REAUTHENTICATE_USER);
+                            if (accountManagerTaskListener != null) {
+                                accountManagerTaskListener.OnTaskNotSuccessful(task, TASK_ID_REAUTHENTICATE_USER);
+                            }
                         }
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        accountManagerTaskListener.OnFailure(e);
+                        if (accountManagerTaskListener != null) {
+                            accountManagerTaskListener.OnFailure(e);
+                        }
                     }
                 });
     }
@@ -207,9 +227,13 @@ public class AccountManager {
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
                     Log.d(TAG, "deleteAccount onComplete: Task successful. Account deleted.");
-                    accountManagerTaskListener.OnTaskSuccessful(task, TASK_ID_DELETE_ACCOUNT);
+                    if (accountManagerTaskListener != null) {
+                        accountManagerTaskListener.OnTaskSuccessful(task, TASK_ID_DELETE_ACCOUNT);
+                    }
                 } else {
-                    accountManagerTaskListener.OnTaskNotSuccessful(task, TASK_ID_DELETE_ACCOUNT);
+                    if (accountManagerTaskListener != null) {
+                        accountManagerTaskListener.OnTaskNotSuccessful(task, TASK_ID_DELETE_ACCOUNT);
+                    }
                     Log.e(TAG, "deleteAccount onComplete: Task failed.", task.getException());
                     if (FirebaseAuth.getInstance().getCurrentUser() != null) {
                         FirebaseAuth.getInstance().signOut();
@@ -250,7 +274,7 @@ public class AccountManager {
                         for (DocumentSnapshot documentSnapshot : deleteTasks.getResult().getDocuments()) {
                             writeBatch.delete(documentSnapshot.getReference());
                         }
-                        for (DocumentSnapshot documentSnapshot: deleteDailyEntries.getResult().getDocuments()) {
+                        for (DocumentSnapshot documentSnapshot : deleteDailyEntries.getResult().getDocuments()) {
                             writeBatch.delete(documentSnapshot.getReference());
                         }
                         writeBatch.commit()
@@ -304,17 +328,21 @@ public class AccountManager {
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            accountManagerTaskListener.OnTaskSuccessful(task, TASK_ID_REAUTHENTICATE_USER);
-                        } else {
-                            accountManagerTaskListener.OnTaskNotSuccessful(task, TASK_ID_REAUTHENTICATE_USER);
+                        if (accountManagerTaskListener != null) {
+                            if (task.isSuccessful()) {
+                                accountManagerTaskListener.OnTaskSuccessful(task, TASK_ID_REAUTHENTICATE_USER);
+                            } else {
+                                accountManagerTaskListener.OnTaskNotSuccessful(task, TASK_ID_REAUTHENTICATE_USER);
+                            }
                         }
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        accountManagerTaskListener.OnFailure(e);
+                        if (accountManagerTaskListener != null) {
+                            accountManagerTaskListener.OnFailure(e);
+                        }
                     }
                 });
     }

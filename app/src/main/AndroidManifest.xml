@@ -23,7 +23,8 @@
         <activity android:name=".activity.ChooseProfilePicture" />
         <activity android:name=".activity.LoginActivity" />
         <activity android:name=".activity.RegistrationActivity" />
-        <activity android:name=".activity.MainActivity">
+        <activity android:name=".activity.MainActivity"
+            android:theme="@style/AppTheme.FullScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

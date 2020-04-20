@@ -8,7 +8,8 @@
 
     <!--LoginActivity & SignUpActivity-->
     <string name="uNameHint">Enter your E-Mail</string>
-    <string name="passHint">Create your password</string>
+    <string name="newPassHint">Create your password</string>
+    <string name="passHint">Enter your password</string>
     <string name="loginButtonText">Login</string>
     <string name="resetPasswordButtonText">Forgot password ?</string>
     <string name="signUpButtonText">Don\'t have an account?\nSign-Up</string>
@@ -32,9 +33,8 @@
     <string name="menu_to_do">To Do</string>
     <string name="menu_tools">Settings</string>
     <string name="menu_share">Share</string>
-    <string name="menu_send">Send</string>
+    <string name="menu_about">About</string>
 
-    <!--Navigation-->
     <string name="navigation_manage_categories">Manage Categories</string>
     <string name="navigation_change_password">Change Password</string>
     <string name="navigation_choose_profile_picture">Change Profile Picture</string>
@@ -56,6 +56,10 @@
     <string name="choose_date">Choose Date</string>
     <string name="choose_time">Choose Time</string>
 
+    <!--About-->
+    <string name="about_intro">Made with &#65039; by KingoMinho.</string>
+
+    <string name="text_send"> </string>
 
     <!--Empty messages-->
     <string name="empty_remaining_tasks">Hooray!! No Remaining Tasks. &#128515;</string>
