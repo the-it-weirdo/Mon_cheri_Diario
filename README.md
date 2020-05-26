@@ -34,12 +34,14 @@
 - Tasks can be categorized into different categories.
 - Users can sign up in the app using their email.
 - The app also provides features to reset password if user forgets his/her password.
-
+- The app also uses [Firebase Crashlytics](https://firebase.google.com/docs/crashlytics) for collecting crash reports. 
 
 ## Built With 🛠
 - [Java](https://docs.oracle.com/javase/8/docs/technotes/guides/language/index.html) - A general-purpose, concurrent, strongly typed, class-based object-oriented language.
 - [Firebase](https://firebase.google.com/) - Firebase is Google's mobile platform that helps you quickly develop high-quality apps and grow your business.
 - [FirebaseUI for Android](https://firebaseopensource.com/projects/firebase/firebaseui-android/) - FirebaseUI is an open-source library for Android that allows you to quickly connect common UI elements to Firebase APIs.
+- [Firebase Crashlytics](https://firebase.google.com/docs/crashlytics) - Firebase Crashlytics a lightweight, realtime crash reporter that helps you track, prioritize, and fix stability issues that erode your app quality.
+
 
 
 # Package Structure
