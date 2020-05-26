@@ -52,18 +52,17 @@
     ├── adapters             # Adapter classes
     ├── manager              # Utility and Manager classes
     ├── models               # Model classes
-    |
     └── ui                   # UI views and Fragments
-       └── about           
-       └── addTask
-       └── changePassword
-       └── dailyEntries  
-       └── home  
-       └── manageCatagory  
-       └── share  
-       └── toDo  
-       └── tools
-       └── viewTasks
+       ├─── about           
+       ├─── addTask
+       ├─── changePassword
+       ├─── dailyEntries  
+       ├─── home  
+       ├─── manageCatagory  
+       ├─── share  
+       ├─── toDo  
+       ├─── tools
+       └─── viewTasks
     
 
 ## Credits
