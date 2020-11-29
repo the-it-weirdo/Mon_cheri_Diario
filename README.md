@@ -10,7 +10,7 @@
 ![GitHub forks](https://img.shields.io/github/forks/the-it-weirdo/Mon_cheri_Diario?style=social)
 ![GitHub watchers](https://img.shields.io/github/watchers/the-it-weirdo/Mon_cheri_Diario?style=social)
 
-**Mon Chéri Diario** is a simple diary cum to-do Android application 📱 which uses [Firebase](https://firebase.google.com/) for data storage and authentication. Dedicated to all Android Developers with ❤️. 
+**Mon Chéri Diario** is a simple diary cum to-do Android application 📱 which uses [Firebase](https://firebase.google.com/) for data storage and authentication. Dedicated to all Android Developers with :heart:. 
 
 <table style="width:100%">
   <tr>
